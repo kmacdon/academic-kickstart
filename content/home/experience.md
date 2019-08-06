@@ -18,27 +18,30 @@ date_format = "Jan 2006"
 #   Leave `date_end` empty if it's your current employer.
 #   Begin/end multi-line descriptions with 3 quotes `"""`.
 [[experience]]
-  title = "CEO"
-  company = "GenCoin"
-  company_url = ""
-  location = "California"
-  date_start = "2017-01-01"
-  date_end = ""
+  title = "Data Analytics Intern"
+  company = "Biogen"
+  company_url = "www.biogen.com"
+  location = "Cambridge, MA"
+  date_start = "2018-06-24"
+  date_end = "2018-08-10"
   description = """
-  Responsibilities include:
   
-  * Analysing
-  * Modelling
-  * Deploying
+  * Created 3 online dashboards using Tableau for the Pharmaceutical Operations and Technology IT team to easily monitor the training compliance of over 300 employees and statuses for hundreds of software applications
+  * Performed analysis using R on the implementation of an automated system in a manufacturing facility and found that the system reduced workload for manufacturing associates and increased productivity
   """
 
 [[experience]]
-  title = "Professor"
-  company = "University X"
-  company_url = ""
-  location = "California"
-  date_start = "2016-01-01"
-  date_end = "2016-12-31"
-  description = """Taught electronic engineering and researched semiconductor physics."""
+  title = "Project Management Intern"
+  company = "Biogen"
+  company_url = "www.biogen.com"
+  location = "Cambridge, MA"
+  date_start = "2017-06-01"
+  date_end = "2016-08-10"
+  description = """
+  
+  * Tracked resource allocation for implementation of automated systems for a new $1B manufacturing plant to ensure effective time utilization of over 100 employees
+  * Created project management aids to easily track key milestones and deliverables for 7 interconnected software systems in order to ensure compatibility and adherence to project schedules
+  * Helped update and maintain business process maps for software systems and manufacturing processes in the plant to track key transfer points between systems
+  """
 
 +++
