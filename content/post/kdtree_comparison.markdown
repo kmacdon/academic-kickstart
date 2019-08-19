@@ -87,11 +87,11 @@ sum(neighbors != truth)/length(truth)
 ```
 
 
-You can see this implementation took almost 4 minutes! This is much too long and would only increase as we added points or variables. The misclassifcation rate was almost 0 (probably due to some points extremely close to the border) but that's little comfort knowing how long it takes. Luckily, there is a much more efficient way to do this.
+You can see this implementation took 3.4 minutes! This is much too long and would only increase as we added points or variables. The misclassifcation rate was almost 0 (mistakes probably due to some points extremely close to the border) but that's little comfort knowing how long it takes. Luckily, there is a much more efficient way to do this.
 
 ## K-D Tree Approach
 
-A k-D tree is a way of storing data that makes it much more efficient to search through the points and find the closest neighbor. The way a k-D tree works is, as the name might suggest, by storing the data in a tree. Starting with the root node, you pick the first column in the data and find the median value. Then you create two child branches, one with all the points whose value in the first column are less than the median value, and the other with all the points whose value in the first column are greater than the median value. The median point is stored at that node. Then for each of the child nodes you repeat the process using the second column instead. You keep repeating this process, cycling through the columns, until every point is stored at a node. For more information, check out the [Wikipedia] post on the subect since it gives a very easy to understand description.
+A k-D tree is a way of storing data that makes it much more efficient to search through the points and find the closest neighbor. The way a k-D tree works is, as the name might suggest, by storing the data in a tree. Starting with the root node, you pick the first column in the data and find the median value. Then you create two child branches, one with all the points whose value in the first column are less than the median value, and the other with all the points whose value in the first column are greater than the median value. The median point is stored at that node. Then for each of the child nodes you repeat the process using the second column instead. You keep repeating this process, cycling through the columns, until every point is stored at a node. For more information, check out the [Wikipedia](https://en.wikipedia.org/wiki/K-d_tree) post on the subect since it gives a very easy to understand description.
 
 ### Implementation
 
@@ -276,7 +276,7 @@ end - start
 ```
 
 ```
-## Time difference of 3.155498 secs
+## Time difference of 3.66348 secs
 ```
 
 ```r
@@ -287,7 +287,7 @@ sum(neighbors != truth)/length(truth)
 ## [1] 0.001
 ```
 
-This only took 3.155 seconds! A 98.5% increase in speed! And there was no loss in accuracy. The speed benefits would only grow as the data grows more complex and larger. 
+This only took 3.663 seconds! A 98.2% increase in speed! And there was no loss in accuracy. The speed benefits would only grow as the data grows more complex and larger. 
 
 ## Conclusion
 

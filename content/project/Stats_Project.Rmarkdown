@@ -1,6 +1,6 @@
 ---
 title: Analysis of NBA Box Score Data
-summary: Inferential analysis of NBA Box Score Data using Logistic Regression
+summary: Inferential analysis of NBA box score data using Logistic Regression
 date: 2017-11-01
 authors: ["admin"]
 tags: ["r", "analysis"]

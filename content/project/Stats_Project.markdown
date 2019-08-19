@@ -1,6 +1,6 @@
 ---
 title: Analysis of NBA Box Score Data
-summary: Inferential analysis of NBA Box Score Data using Logistic Regression
+summary: Inferential analysis of NBA box score data using Logistic Regression
 date: 2017-11-01
 authors: ["admin"]
 tags: ["r", "analysis"]
@@ -169,7 +169,7 @@ for(i in 2:dim(HomeBoxScores)[2]){
 }
 ```
 
-<img src="/publication/Stats_Project_files/figure-html/unnamed-chunk-5-1.png" width="864" style="display: block; margin: auto;" />
+<img src="/project/Stats_Project_files/figure-html/unnamed-chunk-5-1.png" width="864" style="display: block; margin: auto;" />
 
 The Lowess plots appear to show obvious non-linearity with the variable TOV as well as potential non-linear relationships between W and FG%, O_3P%, and O_TRB. so I will perform analysis using fractional polynomials in order to determine if any transformation of these variables is necessary to better fit the relationship.
 

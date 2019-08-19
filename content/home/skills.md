@@ -21,25 +21,19 @@ subtitle = ""
   description = ""
   
 [[feature]]
-  icon = "chart-line"
-  icon_pack = "fas"
+  icon = "python"
+  icon_pack = "fab"
   name = "Python"
   description = ""  
   
 [[feature]]
-  icon = "camera-retro"
+  icon = "database"
   icon_pack = "fas"
   name = "SQL"
   description = ""
   
 [[feature]]
-  icon = "camera-retro"
-  icon_pack = "fas"
-  name = "C++"
-  description = ""
-
-[[feature]]
-  icon = "camera-retro"
+  icon = "chart-line"
   icon_pack = "fas"
   name = "Tableau"
   description = ""

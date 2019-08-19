@@ -36,7 +36,7 @@ date_format = "Jan 2006"
   company_url = "www.biogen.com"
   location = "Cambridge, MA"
   date_start = "2017-06-01"
-  date_end = "2016-08-10"
+  date_end = "2017-08-10"
   description = """
   
   * Tracked resource allocation for implementation of automated systems for a new $1B manufacturing plant to ensure effective time utilization of over 100 employees

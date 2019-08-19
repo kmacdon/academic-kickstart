@@ -3,7 +3,7 @@ title: Bayesian Analysis of NBA Winning Percentages
 date: 2018-10-01
 summary: A simple modeling project using Bayesian statistics for NBA teams
 authors: ["admin"]
-tags: ["r", "Analysis"]
+tags: ["r", "analysis"]
 output: html_document
 ---
 

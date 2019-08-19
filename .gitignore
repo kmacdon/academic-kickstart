@@ -1,2 +1,6 @@
 public/
 .idea/
+*.Rproj.user
+*.Rhistory
+*.DS_Store
+*.DS_Store 
