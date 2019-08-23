@@ -28,10 +28,10 @@ interests:
 
 education:
   courses:
-  - course: MSc in Applied and Computational Mathematics and Statistics
+  - course: MS in Applied and Computational Mathematics and Statistics
     institution: University of Notre Dame
     year: 2019
-  - course: BSc in  Applied and Computational Mathematics and Statistics
+  - course: BS in  Applied and Computational Mathematics and Statistics
     institution: University of Notre Dame
     year: 2019
 
