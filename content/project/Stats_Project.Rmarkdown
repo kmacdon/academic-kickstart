@@ -50,7 +50,7 @@ HomeBoxScores = read.csv("HomeBoxScores.csv")[, -1]
 attach(HomeBoxScores)
 ```
 ## Introduction
-  For this project, I collected and analyzed the box score data of NBA teams in order to determine which statistics were most relevant in determining the winner of a game and find if there are any variables that do not significantly affect the outcome. I acquired this data from [Basketball-Reference.com](https://www.basketball-reference.com) by scraping the box scores of every game played by every team for the 2016-2017 NBA season and then limited my analysis to each team's home games in order to avoid double counting games and remove the effects of home court advantage. The data set contains a binary response variable, W, with 1 being a win for the home team, as well as variables for points, field goal percentage, 3 point field goal percentage, offensive rebounds, total rebounds, assists, steals, and turnovers for both the home and away team, for a total of 16 predictive variables. 
+For this project, I collected and analyzed the box score data of NBA teams in order to determine which statistics were most relevant in determining the winner of a game and find if there are any variables that do not significantly affect the outcome. I acquired this data from [Basketball-Reference.com](https://www.basketball-reference.com) by scraping the box scores of every game played by every team for the 2016-2017 NBA season and then limited my analysis to each team's home games in order to avoid double counting games and remove the effects of home court advantage. The data set contains a binary response variable, W, with 1 being a win for the home team, as well as variables for points, field goal percentage, 3 point field goal percentage, offensive rebounds, total rebounds, assists, steals, and turnovers for both the home and away team, for a total of 16 predictive variables. 
 
 ## Purposeful Selection of Covariates
 
@@ -58,7 +58,7 @@ In order to create our model, we will go through a series of steps designed to r
 
 ##### Step 1
 
-For this step, I will fit every variable to the response in a univariable model to see if there are any that are not significant predictors.
+For this step, I will fit every variable to the response in a univariate model to see if there are any that are not significant predictors.
 
 ```{r}
 # Step 1 of PSOC
@@ -87,7 +87,7 @@ results <- data.frame(cbind(coeff, p.values, std.err, OR, G),
 knitr::kable(round(results,3))
 ```
 
-We can see that all variables are significant at the 1% level when fit as univariable models, so I will fit a model with every variable as a predictor.
+We can see that all variables are significant at the 1% level when fit as univariate models, so I will fit a model with every variable as a predictor.
 
 ##### Step 2
 ```{r}
@@ -148,7 +148,7 @@ mod.prelim <- glm(W ~ ., data = HomeBoxScores, family = binomial)
 
 Since no variables were removed in Step 1, there are no variables that need to be added to the model to see if they are significant in a multivariable logistic regression. Our preliminary model is:
 
-W ~ `r paste(names(HomeBoxScores)[-1], sep = " + ")`
+W ~ `r paste(names(HomeBoxScores)[-1], collapse = " + ")`
 
 ##### Step 5
 

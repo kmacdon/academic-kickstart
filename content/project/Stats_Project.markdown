@@ -9,7 +9,7 @@ output: html_document
 
 
 ## Introduction
-  For this project, I collected and analyzed the box score data of NBA teams in order to determine which statistics were most relevant in determining the winner of a game and find if there are any variables that do not significantly affect the outcome. I acquired this data from [Basketball-Reference.com](https://www.basketball-reference.com) by scraping the box scores of every game played by every team for the 2016-2017 NBA season and then limited my analysis to each team's home games in order to avoid double counting games and remove the effects of home court advantage. The data set contains a binary response variable, W, with 1 being a win for the home team, as well as variables for points, field goal percentage, 3 point field goal percentage, offensive rebounds, total rebounds, assists, steals, and turnovers for both the home and away team, for a total of 16 predictive variables. 
+For this project, I collected and analyzed the box score data of NBA teams in order to determine which statistics were most relevant in determining the winner of a game and find if there are any variables that do not significantly affect the outcome. I acquired this data from [Basketball-Reference.com](https://www.basketball-reference.com) by scraping the box scores of every game played by every team for the 2016-2017 NBA season and then limited my analysis to each team's home games in order to avoid double counting games and remove the effects of home court advantage. The data set contains a binary response variable, W, with 1 being a win for the home team, as well as variables for points, field goal percentage, 3 point field goal percentage, offensive rebounds, total rebounds, assists, steals, and turnovers for both the home and away team, for a total of 16 predictive variables. 
 
 ## Purposeful Selection of Covariates
 
@@ -17,7 +17,7 @@ In order to create our model, we will go through a series of steps designed to r
 
 ##### Step 1
 
-For this step, I will fit every variable to the response in a univariable model to see if there are any that are not significant predictors.
+For this step, I will fit every variable to the response in a univariate model to see if there are any that are not significant predictors.
 
 
 ```r
@@ -66,7 +66,7 @@ knitr::kable(round(results,3))
 |O_STL |  -0.074|     0.00|   0.020| 9.290000e-01|  13.665|
 |O_TOV |   0.084|     0.00|   0.016| 1.087000e+00|  28.661|
 
-We can see that all variables are significant at the 1% level when fit as univariable models, so I will fit a model with every variable as a predictor.
+We can see that all variables are significant at the 1% level when fit as univariate models, so I will fit a model with every variable as a predictor.
 
 ##### Step 2
 
@@ -152,7 +152,7 @@ mod.prelim <- glm(W ~ ., data = HomeBoxScores, family = binomial)
 
 Since no variables were removed in Step 1, there are no variables that need to be added to the model to see if they are significant in a multivariable logistic regression. Our preliminary model is:
 
-W ~ FG., X3P., TRB, AST, TOV, O_FG., O_3P., O_TRB, O_TOV
+W ~ FG. + X3P. + TRB + AST + TOV + O_FG. + O_3P. + O_TRB + O_TOV
 
 ##### Step 5
 
@@ -169,7 +169,7 @@ for(i in 2:dim(HomeBoxScores)[2]){
 }
 ```
 
-<img src="/project/Stats_Project_files/figure-html/unnamed-chunk-5-1.png" width="864" style="display: block; margin: auto;" />
+<img src="/www.kevinmacdonald.me/project/Stats_Project_files/figure-html/unnamed-chunk-5-1.png" width="864" style="display: block; margin: auto;" />
 
 The Lowess plots appear to show obvious non-linearity with the variable TOV as well as potential non-linear relationships between W and FG%, O_3P%, and O_TRB. so I will perform analysis using fractional polynomials in order to determine if any transformation of these variables is necessary to better fit the relationship.
 
