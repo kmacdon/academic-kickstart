@@ -4,7 +4,6 @@ summary: Comparing the effectiveness of two implementations of the KNN algorithm
 date: 2019-08-06
 authors: ["admin"]
 tags: ["r", "algorithms"]
-author: "Kevin MacDonald"
 output: html_document
 ---
 
@@ -276,7 +275,7 @@ end - start
 ```
 
 ```
-## Time difference of 3.66348 secs
+## Time difference of 4.294629 secs
 ```
 
 ```r
@@ -287,7 +286,7 @@ sum(neighbors != truth)/length(truth)
 ## [1] 0.001
 ```
 
-This only took 3.663 seconds! A 98.2% increase in speed! And there was no loss in accuracy. The speed benefits would only grow as the data grows more complex and larger. 
+This only took 4.295 seconds! A 97.9% increase in speed! And there was no loss in accuracy. The speed benefits would only grow as the data grows more complex and larger. 
 
 ## Conclusion
 

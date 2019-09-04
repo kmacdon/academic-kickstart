@@ -4,7 +4,6 @@ summary: Comparing the effectiveness of two implementations of the KNN algorithm
 date: 2019-08-06
 authors: ["admin"]
 tags: ["r", "algorithms"]
-author: "Kevin MacDonald"
 output: html_document
 ---
 
