@@ -144,11 +144,11 @@ nearest_neighbor_naive <- function(training, true, testing){
 
 ## Introduction
 
-The K-Nearest Neighbor algorithm is one of the simplest machine learning algorithms to understand. You use a training set of data with labels, and then for each point in your testing set, you find the point in the training set that it is closest to, and use that training point's label to predict the testing point's label. There are modifications that can be made such as using a majority vote of the k closest points (hence the name) or weight the votes based on distance, but fundamentally it's all the same. It is an intuitive algorithm and one that is relatively simple to implement, but how it is implemented can make a huge difference in its effectiveness which is what this post will explore. I will compare two different implementations, one using a naive approach and one using a data structure called a k-D tree which will I will explain later on.
+The K-Nearest Neighbor algorithm is one of the simplest machine learning algorithms to understand. You use a training set of data with labels, and then for each point in your testing set, you find the point in the training set that it is closest to, and use that training point's label to predict the testing point's label. There are modifications that can be made such as using a majority vote of the k closest points (hence the name) or weight the votes based on distance, but fundamentally it's all the same. It is an intuitive algorithm and one that is relatively simple to implement, but how it is implemented can make a huge difference in it's effectiveness which is what this post will explore. I will compare two different implementations, one using a naive approach and one using a data structure called a k-D tree which will I will explain later on.
 
 ## Naive Approach
 
-The simplest way to find the point in the training set closest to one in the testing set is simply to compare the test point to every single point in the training set and decide which one is closest. It might already be apparent that the speed this algorithm runs is heavily dependent on how many points you have in each set. If you have n training points and m testing points then you have to make n*m comparisons, so the growth can spiral out of control quickly.
+The simplest way to find the point in the training set closest to one in the testing set is simply to compare the test point to every single point in the training set and decide which one is closest. It might already be apparent that the speed this algorithm runs is heavily dependent on how many points you have in each set. If you have n training points and m testing points then you have to make n*m comparisons, so the growth is exponential as your sets grow. 
 
 ### Implemenation
 
@@ -250,7 +250,7 @@ Since this tree will likely have many layers of branches, we need to make sure t
 
 There are two ways of doing this depending on if the data is a matrix or a vector (which occurs when there is only one point left). There might be a more elegant way to due this but this will do for this example. I also reset the depth if it is 0 since R indices start at 1, but this wouldn't be an issue in other languages.
 
-Since this is a recursive algorithm, we need to focus on the base case, when there is only one (or zero) data point passed to the function. Once this case is reached, we create a node, recording the point, its median value, the axis of that median value, and set the right and left nodes to `NULL` since there are no more points to create child brances with.
+Since this is a recursive algorithm, we need to focus on the base case, when there is only one (or zero) data point passed to the function. Once this case is reached, we create a node, recording the point, it's median value, the axis of that median value, and set the right and left nodes to `NULL` since there are no more points to create child brances with.
 
 ```{r, eval = F}
   # If only one point, make node
@@ -341,7 +341,7 @@ Once these functions have returned a value, we have to compare that value to the
   }
 ```
 
-After checking the current node, we then have to decide if we need to head down the other branch we didn't take before to see if there is a closer point on that side. The Wikipedia article explains the theory behind this, but if the distance between the current node's value and the point's value is less than the distance between the point and its current closest neighbor, there is a chance that a better candidate exists on that side.
+After checking the current node, we then have to decide if we need to head down the other branch we didn't take before to see if there is a closer point on that side. The Wikipedia article explains the theory behind this, but if the distance between the current node's value and the point's value is less than the distance between the point and it's current closest neighbor, there is a chance that a better candidate exists on that side.
 
 ```{r, eval = F}
   # Check to see if the other branch needs to be checked 

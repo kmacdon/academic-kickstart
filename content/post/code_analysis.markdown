@@ -1,6 +1,6 @@
 ---
-title: "Using File Extensions to See Programming Production"
-summary: Use file extensions to see how much I have programmed in various languages.
+title: "Looking at My Programming Using File Extensions "
+summary: Use file extensions to see how much I have programmed in various languages
 date: 2019-08-29
 authors: ["admin"]
 tags: ["python", "analysis"]
@@ -84,9 +84,9 @@ sizes[['file','length','ext', 'lang']].head()
 ##               file  length     ext    lang
 ## 8   academic.ipynb     3.0  .ipynb  Python
 ## 9     sync_i18n.py    52.0     .py  Python
-## 10          test.R     1.0      .R       R
-## 11      report.Rmd    51.0    .Rmd       R
-## 12      kd_tree.py    64.0     .py  Python
+## 10      kd_tree.py    64.0     .py  Python
+## 11         test.py    14.0     .py  Python
+## 12  plotting.ipynb    22.0  .ipynb  Python
 ```
 The data frame contains the name of each file, the path, the number of lines in the file, and what type of file it is. I can now look at how many files of each type I have.
 
@@ -134,7 +134,7 @@ sizes.groupby("lang").agg({"length":"sum"})
 ## lang           
 ## C++     11063.0
 ## Python   2851.0
-## R       15756.0
+## R       15704.0
 ```
 
 Overall, I have written over 10,000 lines of code for both R and C++, although since C++ code is much more verbose than R or Python, that is inflated some. Python is something I am still learning so I have only written about 3000 lines of code there. However, these totals do not include all the deletions, modifications, dead ends, etc. that I have run into over the years I have been programming which would probably be 10x as large as the actual finished code I've produced.
