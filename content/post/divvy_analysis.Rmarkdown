@@ -1,0 +1,383 @@
+---
+title: "Predicting Divvy Bike Ride Durations"
+summary: Using data from the Divvy bike share program in Chicago to predict trip duration
+date: 2019-10-08
+authors: ["admin"]
+tags: ["r", "analysis", "regression"]
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,
+                      message = FALSE,
+                      warning = FALSE,
+                      fig.align = 'center',
+                      cache = TRUE,
+                      fig.width = 5,
+                      fig.height = 3)
+library(readr)
+library(dplyr)
+library(rsample)
+library(magrittr)
+library(ggplot2)
+library(lubridate)
+library(gridExtra)
+```
+```{r echo = F}
+load('divvy1.Rdata')
+load('divvy2.Rdata')
+divvy <- rbind(divvy1, divvy2)
+rm(divvy1)
+rm(divvy2)
+# set eval = T if using original data
+```
+```{r, eval = F}
+library(readr)
+library(dplyr)
+library(rsample)
+library(magrittr)
+library(ggplot2)
+library(lubridate)
+
+load('divvy.Rdata')
+weather <- read_csv("weather.csv") %>% 
+  select(DATE, PRCP, TAVG) %>% 
+  mutate(PRCP = ifelse(PRCP > 0, T, F))
+
+divvy$Date <- ymd(format(divvy$start_time, format = "%Y/%m/%d"))
+
+
+divvy <- left_join(divvy, weather, by = c("Date" = "DATE"))
+```
+
+## Introduction
+
+This analysis will look at the data for Divvy Bike rides in the city of Chicago during the year 2017. The data was collected from [Divvy's website](https://www.divvybikes.com/system-data) and merged with weather data from the [NOAA](https://www.ncdc.noaa.gov/cdo-web/datasets). The goal is to build a model which will predict the duration of the bike ride in terms of other variables contained in the data.
+
+## Data 
+
+The dataset consists of about three million rides total once rows with NA values have been removed. 
+
+```{r first_look, echo=FALSE}
+knitr::kable(head(divvy[, 1:6]))
+```
+
+There are 19 variables in the dataset including the start and end times, start and end station names and ids, longitude and latitude for those stations, gender of the rider, their birthyear, an indicator for if there was precipitation, and the average temperature for the day along with some other ID variables we will not use. 
+
+### Creating New Features
+Before we start cleaning the data and exploring the distributions of the variables, there are a few other variables that should be created since they might be of use: rider age, month of ride, time of day the ride occurs, whether the ride is on a weekend or weekday, and the distance between stations in miles. 
+
+Converting the distance from longitude and latitude to miles is important but must be done carefully since we are dealing with a curved surface. I'll use a modified version of the [Haversine Formula](https://en.wikipedia.org/wiki/Haversine_formula) to calculate the distance. Normally Haversine calculates the shortest distance between two geolocations, but that is not the best representation of the distance a bike rider travels since they have to follow city streets. I modify the formula to calculate Manhattan distance instead since that will be a more accurate approximation of their route. 
+
+```{r man_dist}
+man_dist <- Vectorize(function(lon1, lon2, lat1, lat2){
+  rad <- pi/180
+  dlon <- abs(lon1 - lon2) * rad
+  dlat <- abs(lat1 - lat2) * rad
+  a <- sin(dlat/2)^2
+  d <- 2*atan2(sqrt(a), sqrt(1-a))
+  R <- 3963.19
+  dlat <- R * d
+  
+  a <- sin(dlon/2)^2
+  d <- 2*atan2(sqrt(a), sqrt(1-a))
+  dlon <- R * d
+  
+  dlat + dlon
+})
+```
+
+Now that I've created the function, I'll create the rest of the variables, including cutting the age up into bins.
+
+```{r create_var, eval=FALSE}
+# Add all the new variables
+
+divvy <- 
+  divvy %>%  
+  mutate(distance = man_dist(from_longitude, to_longitude, from_latitude, to_latitude),
+         hour = hour(start_time),
+         age = 2017 - birthyear,
+         age_group = cut(2017 - birthyear, 
+                         breaks = c(-Inf, 25, 35, 45, 55, 65, Inf),
+                         labels = c("17-25", "26-35", "36-45", "46-55", "56-65", "66+")),
+         month = factor(month(start_time)),
+         time_of_day = cut(hour,
+                           breaks = c(-1,8.5,16.5, 25),
+                           labels = c("Morning", "Afternoon", "Evening")),
+         weekend = ifelse(weekdays(start_time) %in% c("Saturday", "Sunday"), T, F))
+
+```
+
+### Data Cleaning
+
+Before we start examining the data, it's important to clean it and remove some clearly wrong values. 
+For one, the youngest rider is 0 years old and the oldest is 118 which clearly does not make sense. I will remove all riders younger than 15 or older than 80 who only account for .07% of riders . Additionally, some rides start and end at the same station while others last for over an hour indicating more errors or strange and unpredictable trips. Again, I will remove these outliers, speficially any rides that have a distance of 0 or last longer than an hour which account for about 1.7% of the data with most of that coming from rides that have a distance of zero. 
+
+These removals take out about 50,000 rides from our 3 million. Going forward, I will split the data into a training and a test set using about 2/3 of the data for the training set.
+
+```{r split_data}
+divvy <- 
+  divvy %>% 
+  filter(age > 15, age < 80, distance > 0, tripduration < 3600)
+
+set.seed(101)
+splits <- initial_split(divvy, prop = 2/3)
+
+train_divvy <- training(splits)
+test_divvy <- testing(splits)
+```
+
+### Exploratory Data Analysis
+```{r eda_plots, echo = F, fig.width=10, fig.height=9}
+p1 <- ggplot(train_divvy) + 
+  geom_histogram(aes(x = tripduration), binwidth = 50)+ 
+  labs(x = "Trip Duration", y = "Count") + 
+  theme_minimal()
+
+p2 <- ggplot(train_divvy) + 
+  geom_bar(aes(x = age_group)) + 
+  labs(x = "Age Group", y = "Count") + 
+  theme_minimal()
+
+p3 <- ggplot(train_divvy) + 
+  geom_bar(aes(x = month)) + 
+  labs(x = "Month", y = "Count") + 
+  theme_minimal()
+
+
+p4 <- ggplot(train_divvy) + 
+  geom_bar(aes(x = hour))+ 
+  labs(x = "Hour", y = "Count") + 
+  theme_minimal()
+
+p5 <- ggplot(train_divvy) + 
+  geom_histogram(aes(x = distance), binwidth = .3)+ 
+  labs(x = "Distance", y = "Count") + 
+  theme_minimal()
+
+p6 <- ggplot(train_divvy) + 
+  geom_bar(aes(x = weekend))+ 
+  labs(x = "Weekend", y = "Count") + 
+  theme_minimal()
+
+p7 <- ggplot(train_divvy) + 
+  geom_bar(aes(x = gender))+ 
+  labs(x = "Gender", y = "Count") + 
+  theme_minimal()
+
+p8 <- ggplot(train_divvy) + 
+  geom_histogram(aes(x = TAVG))+ 
+  labs(x = "Temperature", y = "Count") + 
+  theme_minimal()
+
+p9 <- ggplot(train_divvy) + 
+  geom_bar(aes(x = PRCP))+ 
+  labs(x = "Precipitation", y = "Count") + 
+  theme_minimal()
+
+grid.arrange(p1, p2, p3, p4, p5, p6, p7, p8, p9, nrow = 3, ncol = 3)
+```
+
+These plots reaveal a lot of information to us. We can see that trip duration and distance are both heavily skewed, even after we removed trips longer than an hour. Most riders are in the age range 25-35 and rides spike during rush hour times which are 7am-9am and 4pm-6pm. More rides occur in the summer and fall than the winter, which makes sense since people are less likely to bike in cold weather. The average temperature looks to be high, but that makes sense since more rides occur in the summer than winter. About 80% of rides occur on weekdays (5/7 would be 72%), presumably because of commuting. Most rides occur on days without precipitation which isn't surprising, but it will be interesting to see what affect that variable has on trip duration.
+
+### Plot Data Against Trip Duration
+```{r eda_cor, echo = F, fig.width = 10, fig.height=9}
+p1 <- train_divvy %>% 
+  group_by(PRCP) %>% 
+  summarize(med_duration = median(tripduration)) %>% 
+  ggplot(aes(x = PRCP, y = med_duration)) + 
+  geom_point() +
+  labs(x = "Precipitation", y = "Median Duration (s)") + 
+  theme_minimal()
+  
+
+p2 <- train_divvy %>% 
+  group_by(hour) %>% 
+  summarize(med_duration = median(tripduration)) %>% 
+  ggplot(aes(x = hour, y = med_duration)) + 
+  geom_point() + 
+  geom_line() + 
+  labs(x = "Hour", y = "Median Duration (s)") + 
+  theme_minimal()
+
+p3 <- train_divvy %>% 
+  group_by(weekend) %>% 
+  summarize(med_duration = median(tripduration)) %>% 
+  ggplot(aes(x = weekend, y = med_duration)) + 
+  geom_point() +  
+  labs(x = "Weekend", y = "Median Duration (s)") + 
+  theme_minimal()
+
+p4 <- train_divvy %>% 
+  group_by(month) %>% 
+  summarize(med_duration = median(tripduration)) %>% 
+  ggplot(aes(x = as.integer(month), y = med_duration)) + 
+  geom_point() + 
+  geom_line() + 
+  labs(x = "Month", y = "Median Duration (s)") + 
+  theme_minimal()
+
+p5 <- train_divvy %>% 
+  group_by(gender) %>% 
+  summarize(med_duration = median(tripduration))  %>% 
+  ggplot(aes(x = gender, y = med_duration)) + 
+  geom_point() +
+  labs(x = "Gender", y = "Median Duration (s)") + 
+  theme_minimal()
+
+p6 <- sample_n(train_divvy, 5000) %>% 
+  ggplot(., aes(x = TAVG, y = tripduration)) + 
+  geom_jitter() + 
+  geom_smooth() + 
+  labs(x = "Temperature", y = "Trip Duration (s)") + 
+  theme_minimal()
+
+grid.arrange(p1, p2, p3, p4, p5, p6, nrow = 3, ncol = 2)
+```
+
+If we look at the median duration of trips as compared to the variables, some trends pop out. We can see that the trip duration increases later in the day, but we can also still see spikes at rush hour. Since this isn't a linear relationship, I'll create a categorical feature that classifies rides into 3 groups based on what time of day they occured, midnight-8, 8-4, 4-midnight. Interestingly, trips are longer when there is no precipitation, but only by about 20 seconds, so not an extreme difference. Trip duration also increases during the summer months which may occur for a number of reasons. I'll create a new categorical feature to classify the rides as occuring in summer or winter to account for this. Trip length also increases on the weekend which may be do to people not using the divvy bikes to commute. Women also have significantly longer trips, by about a minute.
+
+Using a random sample of 5,000 training points, we can see that temperature does not seem to have much of an impact on trip duration, since the smoothing line is nearly flat. The correlation between temperature and trip duration is only `r round(cor(train_divvy$tripduration, train_divvy$TAVG), 3)`, so there doesn't seem to be any reason in keeping it. 
+
+```{r season_var}
+train_divvy$season <- ifelse(train_divvy$month %in% 4:9, "Summer", "Winter")
+
+test_divvy$season <- ifelse(test_divvy$month %in% 4:9, "Summer", "Winter")
+```
+
+## Model Building
+
+### First Model
+I'll now build a model using gender, season, precipitation, time of day, and distance in order to predict trip duration.
+
+```{r first_mod}
+model <- lm(tripduration ~ distance + gender + PRCP + season + time_of_day, 
+            data = train_divvy)
+```
+```{r, echo = F}
+knitr::kable(round(summary(model)$coefficients, 3))
+```
+
+This model has an adjusted $R^2$ value of .68, which is fairly good for a problem such as this. Additionally, all of the features are statistically significant predictors of trip duration. 
+
+In order to do some diagnostics on this model, I'll randomly select 5,000 points residuals to plot. 
+
+```{r first_mod_res, echo = FALSE, fig.width = 7, fig.height=3.6}
+samp <- sample(1:nrow(train_divvy), 5000)
+p1 <- ggplot() + 
+  geom_point(aes(x = model$fitted.values[samp], y = model$residuals[samp])) + 
+  labs(x = "Fitted Values", y = "Residuals") + 
+  theme_minimal()
+
+p2 <- ggplot() + 
+  geom_histogram(aes(x = model$residuals[samp])) + 
+  labs(x = "Residuals", y = "Count") + 
+  theme_minimal()
+
+grid.arrange(p1, p2, nrow = 1)
+```
+
+
+We can see there is an issue with the residuals since they do not appear to have constant variance, and the distribution is slightly skewed left. It would be interesting to see what the largest residual is.
+
+```{r, echo = F}
+knitr::kable(train_divvy[which.max(model$residuals), c("distance", "tripduration")])
+```
+
+We can see that the largest residual belongs to a trip that lasted almost an hour but only went .35 miles which does not make sense. It raises the difficult question of how many outliers we should remove, so I'll examine the distribution of the speed of the trips in the training set in order to see if there are more data points that should be removed. 
+
+```{r speed_hist, echo = FALSE}
+train_divvy <- 
+  train_divvy %>% 
+  mutate(speed = distance/(tripduration/3600))
+```
+```{r, echo = F}
+ggplot(train_divvy) + 
+  geom_histogram(aes(x = speed), bins = 100) + 
+  labs(x = "Speed (mph)", y = "Count") + 
+  theme_minimal()
+
+knitr::kable(t(as.array(summary(train_divvy$speed))))
+```
+
+Between the histogram and the summary of speed, we can see that there are some obvious issues with the data. For one, no one should be biking at speeds of 124 mph, but neither should they only be biking at .12 mph. For context, I used this [Wikipedia page](https://en.wikipedia.org/wiki/Bicycle_performance#Typical_speeds) describing typical cycling speeds. It explains that the low end should be about 6 mph while professional racing cyclists will average 25 mph, so to be conservative while still removing clear outliers, I'll remove all rides slower than 5 mph or faster than 20 mph. This removes about 5% of the points in the training set, which is higher than I would like, but necessary since the data either has errors, or people decided to take long leisurely bike rides which our model would not be able to account for anyways unless there's some pattern buried deep in the data. 
+
+```{r filter_speed, echo = FALSE}
+train_divvy <- 
+  train_divvy %>% 
+  filter(speed > 5, speed < 20)
+```
+
+### Second Model
+```{r second_mod}
+model <- lm(tripduration ~ distance + gender + PRCP + season + time_of_day, 
+            data = train_divvy)
+```
+```{r second_res, echo=FALSE}
+samp <- sample(1:nrow(train_divvy), 5000)
+p1 <- ggplot() + 
+  geom_point(aes(x = model$fitted.values[samp], y = model$residuals[samp])) + 
+  labs(x = "Fitted Values", y = "Residuals") + 
+  theme_minimal()
+
+p2 <- ggplot() + 
+  geom_histogram(aes(x = model$residuals[samp])) + 
+  labs(x = "Residuals", y = "Count") + 
+  theme_minimal()
+
+grid.arrange(p1, p2, nrow = 1)
+```
+
+Removing those points improved the $R^2$ to `r round(summary(model)$adj, 2)`, but it's still clear from the residuals plot that the problems remain. Due to these issues, I will try to deal with the heteroscedascity by predicting the log of the duration using the log of the distance.
+
+### Third Model
+```{r log_var}
+train_divvy$log_dist = log(train_divvy$distance)
+train_divvy$log_dur = log(train_divvy$tripduration)
+test_divvy$log_dist = log(test_divvy$distance)
+test_divvy$log_dur = log(test_divvy$tripduration)
+```
+```{r third_model}
+model <- lm(log_dur ~ log_dist + gender + PRCP + season + time_of_day, 
+            data = train_divvy)
+```
+```{r third_coef, echo = FALSE}
+knitr::kable(round(summary(model)$coefficients, 3))
+```
+```{r third_res, echo = FALSE, fig.width = 7, fig.height=3.6}
+samp <- sample(1:nrow(train_divvy), 5000)
+p1 <- ggplot() + 
+  geom_point(aes(x = model$fitted.values[samp], y = model$residuals[samp])) + 
+  labs(x = "Fitted Values", y = "Residuals") + 
+  theme_minimal()
+
+p2 <- ggplot() + 
+  geom_histogram(aes(x = model$residuals[samp])) + 
+  labs(x = "Residuals", y = "Count") + 
+  theme_minimal()
+
+grid.arrange(p1, p2, nrow = 1)
+```
+
+Now, we are sacrificing interpretability for accuracy, but it looks like the tradeoff was worth it. The histogram of the resiudals looks much more normal and the scatterplot does not have the heteroscedascity of the earlier ones.
+
+The adjusted $R^2$ is about `r round(summary(model)$adj.r, 2)`, so we can see this transformation didn't just help fix the residual problem, it also improved the explanatory nature of the model. This model explains about 87% of the variation in tripduration (for the dataset without outliers). Just to see that we're not overfitting our data, I'll compare the mean squared error and mean absolute percentage error of the training data to the test data, which did not have the speed outliers removed. 
+
+```{r, echo=FALSE}
+mse_train <- mean((exp(model$fitted.values) - train_divvy$tripduration)^2)
+mape_train <- mean(abs((exp(model$fitted.values) - train_divvy$tripduration)/train_divvy$tripduration)*100)
+
+preds <- predict(model, test_divvy)
+mse_test <- mean((exp(preds) - test_divvy$tripduration)^2)
+mape_test <- mean(abs((exp(preds) - test_divvy$tripduration)/test_divvy$tripduration)*100)
+
+result <- rbind(c("MSE Train", "MAPE Train", "MSE Test", "MAPE Test"),
+                round(c(mse_train, mape_train, mse_test, mape_test), 2))
+knitr::kable(result)
+```
+
+Our model performed better on the training data then the test data, which was to be expected in any scenario but especially one in which we removed outliers in one set and not the other. The difference in MSE is very large, but considering the outliers in the test data set would produce very large residuals, and MSE would penalize those more heavily, this is not too big of an issue. The MAPE for both sets is fairly comparable, showing that on average, our durations were off by about 21% on the test data, an acceptable result.
+
+## Conclusions
+
+This is a large data set with many variables, so one could spend weeks analyzing the data and doing feature selection and engineering to come to a good result. My approach was simpler, and although I risked fitting the data to the model by removing outliers, those removals were necessary since the data does have outliers that simply do not make sense. The end result is a satisfactory model for trip duration and showed that factors such as gender, time of day, and season were all important in determining the length of the rides. 

@@ -152,7 +152,7 @@ sns.despine()
 plt.show()
 ```
 
-As I would have expected, I have the most R files out of the three langauges. R is the language I use most frequently and have been using it for the past 4 years. I have only really started using Python for the past 8 months while C++ was actually the first language I learned as a freshman in college. 
+As I would have expected, I have the most R files out of the three langauges. R is the language I use most frequently and I have been using it for the past 4 years. I only really started using Python my senior of college while C++ was actually the first language I learned as a freshman. 
 
 ```{python box_plot, results = 'hide', echo = FALSE}
 plt.figure(figsize = (8,8))
