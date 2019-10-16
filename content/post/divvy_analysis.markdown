@@ -10,6 +10,15 @@ output: html_document
 
 
 
+## Introduction
+
+This analysis will look at the data for Divvy Bike rides in the city of Chicago during the year 2017. The data was collected from [Divvy's website](https://www.divvybikes.com/system-data) and merged with weather data from the [NOAA](https://www.ncdc.noaa.gov/cdo-web/datasets). The goal is to build a model which will predict the duration of the bike ride in terms of other variables contained in the data.
+
+## Data 
+
+I'll load the data and needed packages as well as merge the Divvy data with the weather data by date.
+
+
 ```r
 library(readr)
 library(dplyr)
@@ -28,12 +37,6 @@ divvy$Date <- ymd(format(divvy$start_time, format = "%Y/%m/%d"))
 
 divvy <- left_join(divvy, weather, by = c("Date" = "DATE"))
 ```
-
-## Introduction
-
-This analysis will look at the data for Divvy Bike rides in the city of Chicago during the year 2017. The data was collected from [Divvy's website](https://www.divvybikes.com/system-data) and merged with weather data from the [NOAA](https://www.ncdc.noaa.gov/cdo-web/datasets). The goal is to build a model which will predict the duration of the bike ride in terms of other variables contained in the data.
-
-## Data 
 
 The dataset consists of about three million rides total once rows with NA values have been removed. 
 
