@@ -74,7 +74,7 @@ def file_len(fname, ext):
 ```
 
 ```{python get_data}
-mypath = "/Users/kevinmacdonald/Google Drive/"
+mypath = "/Users/kevinmacdonald/google_drive/"
 code_files = []
 code_ext = []
 code_type = []
@@ -119,7 +119,7 @@ sizes['file'] = sizes['file'].str.split("/").apply(lambda x: x[-1])
 # Filter out certain paths that don't contain my code
 
 filt = ~sizes['path']\
-.apply(lambda x: pd.Series(x).isin(["Book Notes", "checkpoint", "theme", "Work", "Resources", "Applied Probability"]))\
+.apply(lambda x: pd.Series(x).isin(["book_notes", "checkpoint", "theme", "work", "resources", "Applied Probability"]))\
 .apply(lambda x: any(x.dropna()), axis = 1)
 
 sizes = sizes[filt]

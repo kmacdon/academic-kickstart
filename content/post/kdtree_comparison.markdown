@@ -275,7 +275,7 @@ end - start
 ```
 
 ```
-## Time difference of 4.294629 secs
+## Time difference of 3.430076 secs
 ```
 
 ```r
@@ -286,7 +286,7 @@ sum(neighbors != truth)/length(truth)
 ## [1] 0.001
 ```
 
-This only took 4.295 seconds! A 97.9% increase in speed! And there was no loss in accuracy. The speed benefits would only grow as the data grows more complex and larger. 
+This only took 3.43 seconds! A 98.3% increase in speed! And there was no loss in accuracy. The speed benefits would only grow as the data grows more complex and larger. 
 
 ## Conclusion
 

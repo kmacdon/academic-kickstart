@@ -33,7 +33,7 @@ import matplotlib.pyplot as plt
 
 
 ```python
-mypath = "/Users/kevinmacdonald/Google Drive/"
+mypath = "/Users/kevinmacdonald/google_drive/"
 code_files = []
 code_ext = []
 code_type = []
@@ -84,9 +84,9 @@ sizes[['file','length','ext', 'lang']].head()
 ##               file  length     ext    lang
 ## 8   academic.ipynb     3.0  .ipynb  Python
 ## 9     sync_i18n.py    52.0     .py  Python
-## 10          test.R     1.0      .R       R
-## 11      report.Rmd    51.0    .Rmd       R
-## 12      kd_tree.py    64.0     .py  Python
+## 10      kd_tree.py    64.0     .py  Python
+## 11         test.py    14.0     .py  Python
+## 12  plotting.ipynb    22.0  .ipynb  Python
 ```
 The data frame contains the name of each file, the path, the number of lines in the file, and what type of file it is. I can now look at how many files of each type I have.
 
@@ -117,10 +117,10 @@ largest.head()
 ```
 
 ```
-##                        file   size
-## 0    Final_Presentation.Rmd  333.0
-## 1  website_clustering.ipynb  196.0
-## 2                  hand.cpp  493.0
+##                      file    size
+## 0  Final_Presentation.Rmd   333.0
+## 1            uts46data.py  8205.0
+## 2                hand.cpp   493.0
 ```
 
 For each language, my longest file created is from a final project for a class. The R file is from a project comparing combinatorial optimization algorithms, the Python from a project building a website recommendation system, and the C++ one from a project building a command line poker game to play vs a computer. 
@@ -130,11 +130,11 @@ sizes.groupby("lang").agg({"length":"sum"})
 ```
 
 ```
-##          length
-## lang           
-## C++     11063.0
-## Python   3662.0
-## R       17972.0
+##            length
+## lang             
+## C++       11063.0
+## Python  1024468.0
+## R         17969.0
 ```
 
 Overall, I have written over 10,000 lines of code for both R and C++, although since C++ code is much more verbose than R or Python, that is inflated some. Python is something I am still learning so I have only written about 3000 lines of code there. However, these totals do not include all the deletions, modifications, dead ends, etc. that I have run into over the years I have been programming which would probably be 10x as large as the actual finished code I've produced.
