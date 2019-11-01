@@ -118,12 +118,12 @@ test_divvy <- testing(splits)
 ```
 
 ### Exploratory Data Analysis
-<img src="/www.kevinmacdonald.me/post/divvy_analysis_files/figure-html/eda_plots-1.png" width="960" style="display: block; margin: auto;" />
+<img src="/post/divvy_analysis_files/figure-html/eda_plots-1.png" width="960" style="display: block; margin: auto;" />
 
 These plots reaveal a lot of information to us. We can see that trip duration and distance are both heavily skewed, even after we removed trips longer than an hour. Most riders are in the age range 25-35 and rides spike during rush hour times which are 7am-9am and 4pm-6pm. More rides occur in the summer and fall than the winter, which makes sense since people are less likely to bike in cold weather. The average temperature looks to be high, but that makes sense since more rides occur in the summer than winter. About 80% of rides occur on weekdays (5/7 would be 72%), presumably because of commuting. Most rides occur on days without precipitation which isn't surprising, but it will be interesting to see what affect that variable has on trip duration.
 
 ### Plot Data Against Trip Duration
-<img src="/www.kevinmacdonald.me/post/divvy_analysis_files/figure-html/eda_cor-1.png" width="960" style="display: block; margin: auto;" />
+<img src="/post/divvy_analysis_files/figure-html/eda_cor-1.png" width="960" style="display: block; margin: auto;" />
 
 If we look at the median duration of trips as compared to the variables, some trends pop out. We can see that the trip duration increases later in the day, but we can also still see spikes at rush hour. Since this isn't a linear relationship, I'll create a categorical feature that classifies rides into 3 groups based on what time of day they occured, midnight-8, 8-4, 4-midnight. Interestingly, trips are longer when there is no precipitation, but only by about 20 seconds, so not an extreme difference. Trip duration also increases during the summer months which may occur for a number of reasons. I'll create a new categorical feature to classify the rides as occuring in summer or winter to account for this. Trip length also increases on the weekend which may be do to people not using the divvy bikes to commute. Women also have significantly longer trips, by about a minute.
 
@@ -161,7 +161,7 @@ This model has an adjusted `\(R^2\)` value of .68, which is fairly good for a pr
 
 In order to do some diagnostics on this model, I'll randomly select 5,000 points residuals to plot. 
 
-<img src="/www.kevinmacdonald.me/post/divvy_analysis_files/figure-html/first_mod_res-1.png" width="672" style="display: block; margin: auto;" />
+<img src="/post/divvy_analysis_files/figure-html/first_mod_res-1.png" width="672" style="display: block; margin: auto;" />
 
 
 We can see there is an issue with the residuals since they do not appear to have constant variance, and the distribution is slightly skewed left. It would be interesting to see what the largest residual is.
@@ -174,7 +174,7 @@ We can see there is an issue with the residuals since they do not appear to have
 We can see that the largest residual belongs to a trip that lasted almost an hour but only went .35 miles which does not make sense. It raises the difficult question of how many outliers we should remove, so I'll examine the distribution of the speed of the trips in the training set in order to see if there are more data points that should be removed. 
 
 
-<img src="/www.kevinmacdonald.me/post/divvy_analysis_files/figure-html/unnamed-chunk-5-1.png" width="480" style="display: block; margin: auto;" />
+<img src="/post/divvy_analysis_files/figure-html/unnamed-chunk-5-1.png" width="480" style="display: block; margin: auto;" />
 
 |      Min.|  1st Qu.|   Median|     Mean|  3rd Qu.|     Max.|
 |---------:|--------:|--------:|--------:|--------:|--------:|
@@ -190,7 +190,7 @@ Between the histogram and the summary of speed, we can see that there are some o
 model <- lm(tripduration ~ distance + gender + PRCP + season + time_of_day, 
             data = train_divvy)
 ```
-<img src="/www.kevinmacdonald.me/post/divvy_analysis_files/figure-html/second_res-1.png" width="480" style="display: block; margin: auto;" />
+<img src="/post/divvy_analysis_files/figure-html/second_res-1.png" width="480" style="display: block; margin: auto;" />
 
 Removing those points improved the `\(R^2\)` to 0.81, but it's still clear from the residuals plot that the problems remain. Due to these issues, I will try to deal with the heteroscedascity by predicting the log of the duration using the log of the distance.
 
@@ -217,7 +217,7 @@ model <- lm(log_dur ~ log_dist + gender + PRCP + season + time_of_day,
 |seasonWinter         |   -0.033|      0.000|   -90.948|                  0|
 |time_of_dayAfternoon |    0.056|      0.000|   128.089|                  0|
 |time_of_dayEvening   |    0.043|      0.000|    95.197|                  0|
-<img src="/www.kevinmacdonald.me/post/divvy_analysis_files/figure-html/third_res-1.png" width="672" style="display: block; margin: auto;" />
+<img src="/post/divvy_analysis_files/figure-html/third_res-1.png" width="672" style="display: block; margin: auto;" />
 
 Now, we are sacrificing interpretability for accuracy, but it looks like the tradeoff was worth it. The histogram of the resiudals looks much more normal and the scatterplot does not have the heteroscedascity of the earlier ones.
 

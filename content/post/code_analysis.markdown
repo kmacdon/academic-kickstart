@@ -90,11 +90,11 @@ sizes[['file','length','ext', 'lang']].head()
 ```
 The data frame contains the name of each file, the path, the number of lines in the file, and what type of file it is. I can now look at how many files of each type I have.
 
-<img src="/www.kevinmacdonald.me/post/code_analysis_files/figure-html/bar_plot-1.png" width="768" style="display: block; margin: auto;" />
+<img src="/post/code_analysis_files/figure-html/bar_plot-1.png" width="768" style="display: block; margin: auto;" />
 
 As I would have expected, I have the most R files out of the three langauges. R is the language I use most frequently and I have been using it for the past 4 years. I only really started using Python my senior of college while C++ was actually the first language I learned as a freshman. 
 
-<img src="/www.kevinmacdonald.me/post/code_analysis_files/figure-html/box_plot-1.png" width="768" style="display: block; margin: auto;" />
+<img src="/post/code_analysis_files/figure-html/box_plot-1.png" width="768" style="display: block; margin: auto;" />
 
 This data also allows me to compare the lengths of files by langauges. I limited the data to files under 300 lines just to make the visualization easier to read. Interestingly, median length of files is relatively the same across languages; I assummed C++ files would be much longer than the rest, but there isn't that much of a difference, just about 5 lines longer. R files, however, are heavily skewed with many outliers. This is because most of my college classes  used R, so I have lots of final projects written in R. 
 
