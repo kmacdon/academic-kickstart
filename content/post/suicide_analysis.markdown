@@ -19,8 +19,7 @@ I decided to do this analysis after seeing a chart on gun violence in the United
 ```r
 library(dplyr)
 library(ggplot2)
-library(maps)
-library(fiftystater)
+library(usmap)
 
 suicides <- readr::read_csv("state_suicide.csv") %>% 
   filter(YEAR == 2017) %>% 
@@ -31,9 +30,8 @@ suicides <- readr::read_csv("state_suicide.csv") %>%
 # Merge data with map information for plotting
 state_names <- tibble(abbrev = state.abb,
                           names = state.name)
-suicides <- left_join(suicides, state_names, by = c("STATE" = "abbrev"))
-
-suicides$names <- stringr::str_to_lower(suicides$names)
+suicides <- left_join(suicides, state_names, by = c("STATE" = "abbrev")) %>% 
+  mutate(fips = fips(STATE))
 ```
 <img src="/post/suicide_analysis_files/figure-html/unnamed-chunk-3-1.png" width="672" style="display: block; margin: auto;" />
 
@@ -42,8 +40,9 @@ It's immediately noticeable that Montana and Wyoming have the highest suicide ra
 
 ```r
 pop <- readr::read_csv("population.csv") %>% 
+  filter(State != "District of Columbia") %>% 
   select(State, Density) %>% 
-  mutate(State = stringr::str_to_lower(State))
+  mutate(fips = fips(State))
 ```
 <img src="/post/suicide_analysis_files/figure-html/unnamed-chunk-5-1.png" width="672" style="display: block; margin: auto;" />
 
@@ -53,7 +52,7 @@ I used the log of the population density so that the differences among states ca
 ```r
 guns <- readr::read_csv("gun_ownership.csv") %>% 
   select(State, gunOwnership) %>% 
-  mutate(State = stringr::str_to_lower(State))
+  mutate(fips = fips(State))
 ```
 <img src="/post/suicide_analysis_files/figure-html/unnamed-chunk-7-1.png" width="672" style="display: block; margin: auto;" />
 

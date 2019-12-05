@@ -23,8 +23,7 @@ I decided to do this analysis after seeing a chart on gun violence in the United
 ```{r}
 library(dplyr)
 library(ggplot2)
-library(maps)
-library(fiftystater)
+library(usmap)
 
 suicides <- readr::read_csv("state_suicide.csv") %>% 
   filter(YEAR == 2017) %>% 
@@ -34,17 +33,13 @@ suicides <- readr::read_csv("state_suicide.csv") %>%
 # Merge data with map information for plotting
 state_names <- tibble(abbrev = state.abb,
                           names = state.name)
-suicides <- left_join(suicides, state_names, by = c("STATE" = "abbrev"))
-
-suicides$names <- stringr::str_to_lower(suicides$names)
+suicides <- left_join(suicides, state_names, by = c("STATE" = "abbrev")) %>% 
+  mutate(fips = fips(STATE))
 
 ```
 ```{r, echo=FALSE}
-ggplot(suicides, aes(map_id = names)) + 
-  geom_map(aes(fill = RATE), map = fifty_states) +
-  expand_limits(x = fifty_states$long, y = fifty_states$lat) +
-  coord_map() + 
-  theme(legend.position = "bottom",
+plot_usmap(data = suicides, values = "RATE") + 
+  theme(legend.position = "right",
         panel.background = element_blank(), 
         axis.title = element_blank(),
         axis.ticks = element_blank(),
@@ -59,16 +54,15 @@ It's immediately noticeable that Montana and Wyoming have the highest suicide ra
 
 ```{r}
 pop <- readr::read_csv("population.csv") %>% 
+  filter(State != "District of Columbia") %>% 
   select(State, Density) %>% 
-  mutate(State = stringr::str_to_lower(State))
+  mutate(fips = fips(State))
 
 ```
 ```{r, echo=FALSE}
-ggplot(pop, aes(map_id = State)) + 
-  geom_map(aes(fill = log(Density)), map = fifty_states) +
-  expand_limits(x = fifty_states$long, y = fifty_states$lat) +
-  coord_map() + 
-  theme(legend.position = "bottom",
+pop$logDensity <- log(pop$Density)
+plot_usmap(data = pop, values = "logDensity") + 
+  theme(legend.position = "right",
         panel.background = element_blank(), 
         axis.title = element_blank(),
         axis.ticks = element_blank(),
@@ -83,15 +77,12 @@ I used the log of the population density so that the differences among states ca
 ```{r}
 guns <- readr::read_csv("gun_ownership.csv") %>% 
   select(State, gunOwnership) %>% 
-  mutate(State = stringr::str_to_lower(State))
+  mutate(fips = fips(State))
 
 ```
 ```{r, echo=FALSE}
-ggplot(guns, aes(map_id = State)) + 
-  geom_map(aes(fill = gunOwnership), map = fifty_states) +
-  expand_limits(x = fifty_states$long, y = fifty_states$lat) +
-  coord_map() + 
-  theme(legend.position = "bottom",
+plot_usmap(data = guns, values = "gunOwnership") + 
+  theme(legend.position = "right",
         panel.background = element_blank(), 
         axis.title = element_blank(),
         axis.ticks = element_blank(),
