@@ -81,7 +81,7 @@ Again, there is a strong and obvious correlation between these two variables, wh
 
 <img src="/post/suicide_analysis_files/figure-html/unnamed-chunk-12-1.png" width="480" style="display: block; margin: auto;" />
 
-This multicollinearity will be an issue as I move into building a model using these variables. 
+This potential multicollinearity might be an issue as I move into building a model using these variables. 
 
 ## Model Building
 
@@ -119,7 +119,38 @@ Gun ownership is also a significant predictor of suicide rate, but the R^2^ valu
 
 The scatterplot of the residucals doesn't show any pattern, but the histogram is clearly not normally distributed. Combined with the lower R^2^ value, I would conclude that population density is a better predictor of suicide rate than gun ownership. 
 
-As mentioned before, there is the issue of multicollinearity which means I can't just build a model using both gun ownership and population density as predictors. I could use principal component analysis in order to eliminate this issue, but that would sacrifice interpretability which I think is more important in this situation, so I won't continue with model building.
+#### Both Variables
+
+As mentioned before, there is the potential issue of multicollinearity which I can quantify by calculating the [Variance Inflation Factor](https://en.wikipedia.org/wiki/Variance_inflation_factor) (VIF) between my two explanatory variables.
+
+
+```r
+mod_vif <- lm(log(Density) ~ gunOwnership, data = full_data)
+round(1/(1 - summary(mod_vif)$r.squared), 2)
+```
+
+```
+## [1] 1.92
+```
+
+The VIF is only about 1.92, which indicates that the multicollinearity is not strong, so I'll build the model with both variables and examine it as I did the others.
+
+
+```r
+mod_both <- lm(RATE ~ log(Density) + gunOwnership, data = full_data)
+```
+
+|             | Estimate| Std. Error| t value| Pr(>&#124;t&#124;)|
+|:------------|--------:|----------:|-------:|------------------:|
+|(Intercept)  |   26.308|      2.288|  11.496|              0.000|
+|log(Density) |   -2.581|      0.309|  -8.345|              0.000|
+|gunOwnership |    6.461|      3.182|   2.030|              0.048|
+
+This model shows changes in the coefficients for each variable which is to be expected, and gun ownership is now just barely significant. The adjusted R^2^ value is about 0.79, which is only a slight improvement over the model with just population density as an explanatory variable. 
+
+<img src="/post/suicide_analysis_files/figure-html/unnamed-chunk-22-1.png" width="768" style="display: block; margin: auto;" />
+
+The resiudals appear mostly normal, certainly better than the model with just gun ownership, although there is the spike around -3. Overall, I would stick with the model with just population density since it is simpler, has better looking residuals, and is still almost as good as the model with both variables. That model indicates that for every decrease in order of magnitude of density (1000 to 100 or 100 to 10) the expected suicide rate would increase by about 6.94.
 
 ## Conclusion
 

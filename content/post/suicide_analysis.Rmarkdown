@@ -151,7 +151,7 @@ ggplot(full_data) +
        y = "Log Density") 
 ```
 
-This multicollinearity will be an issue as I move into building a model using these variables. 
+This potential multicollinearity might be an issue as I move into building a model using these variables. 
 
 ## Model Building
 
@@ -207,7 +207,41 @@ gridExtra::grid.arrange(p1, p2, nrow = 1)
 
 The scatterplot of the residucals doesn't show any pattern, but the histogram is clearly not normally distributed. Combined with the lower R^2^ value, I would conclude that population density is a better predictor of suicide rate than gun ownership. 
 
-As mentioned before, there is the issue of multicollinearity which means I can't just build a model using both gun ownership and population density as predictors. I could use principal component analysis in order to eliminate this issue, but that would sacrifice interpretability which I think is more important in this situation, so I won't continue with model building.
+#### Both Variables
+
+As mentioned before, there is the potential issue of multicollinearity which I can quantify by calculating the [Variance Inflation Factor](https://en.wikipedia.org/wiki/Variance_inflation_factor) (VIF) between my two explanatory variables.
+
+```{r}
+mod_vif <- lm(log(Density) ~ gunOwnership, data = full_data)
+round(1/(1 - summary(mod_vif)$r.squared), 2)
+```
+
+The VIF is only about 1.92, which indicates that the multicollinearity is not strong, so I'll build the model with both variables and examine it as I did the others.
+
+```{r}
+mod_both <- lm(RATE ~ log(Density) + gunOwnership, data = full_data)
+```
+```{r, echo=FALSE}
+knitr::kable(round(summary(mod_both)$coef, 3))
+```
+
+This model shows changes in the coefficients for each variable which is to be expected, and gun ownership is now just barely significant. The adjusted R^2^ value is about `r round(summary(mod_both)$adj.r.squared, 3)`, which is only a slight improvement over the model with just population density as an explanatory variable. 
+
+```{r, echo=FALSE, fig.width=8, fig.height=4}
+p1 <- ggplot() + 
+  geom_histogram(aes(x = mod_both$residuals), binwidth = 1) + 
+  theme_minimal() + 
+  labs(x = "Residuals", y = "Count")
+
+p2 <- ggplot() + 
+  geom_point(aes(x = mod_both$fitted.values, y = mod_both$residuals)) + 
+  theme_minimal() + 
+  labs(x = "Fitted Values",
+       y = "Residuals")
+gridExtra::grid.arrange(p1, p2, nrow = 1)
+```
+
+The resiudals appear mostly normal, certainly better than the model with just gun ownership, although there is the spike around -3. Overall, I would stick with the model with just population density since it is simpler, has better looking residuals, and is still almost as good as the model with both variables. That model indicates that for every decrease in order of magnitude of density (1000 to 100 or 100 to 10) the expected suicide rate would increase by about `r round(log(10)*3.015, 2)`.
 
 ## Conclusion
 
