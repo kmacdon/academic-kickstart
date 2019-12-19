@@ -144,15 +144,15 @@ nearest_neighbor_naive <- function(training, true, testing){
 
 ## Introduction
 
-The K-Nearest Neighbor algorithm is one of the simplest machine learning algorithms to understand. You use a training set of data with labels, and then for each point in your testing set, you find the point in the training set that it is closest to, and use that training point's label to predict the testing point's label. There are modifications that can be made such as using a majority vote of the k closest points (hence the name) or weight the votes based on distance, but fundamentally it's all the same. It is an intuitive algorithm and one that is relatively simple to implement, but how it is implemented can make a huge difference in it's effectiveness which is what this post will explore. I will compare two different implementations, one using a naive approach and one using a data structure called a k-D tree which will I will explain later on.
+The K-Nearest Neighbor algorithm is one of the simplest machine learning algorithms to understand. Starting with a labeled training set of data , you take each point in the test set and find the point in the training set that it is closest to, using that training point's label to predict the test point's label. There are modifications that can be made such as using a majority vote of the k closest points (hence the name) or weighting the votes based on distance, but fundamentally it's all the same. It's an intuitive algorithm and one that is relatively simple to implement, but how it's implemented can make a huge difference in its effectiveness. I'll explore this by comparing two different implementations, one using a naive approach and one using a data structure called a k-D tree which will I will explain later on.
 
 ## Naive Approach
 
-The simplest way to find the point in the training set closest to one in the testing set is simply to compare the test point to every single point in the training set and decide which one is closest. It might already be apparent that the speed this algorithm runs is heavily dependent on how many points you have in each set. If you have n training points and m testing points then you have to make n*m comparisons, so the growth is exponential as your sets grow. 
+The simplest way to find the point in the training set closest to one in the test set is simply to compare the test point to every single point in the training set and decide which one is closest. It might already be apparent that the speed this algorithm runs is heavily dependent on how many points you have in each set. If you have n training points and m testing points then you have to make n*m comparisons, so the growth is exponential as your sets grow. 
 
 ### Implemenation
 
-The first part of creating a KNN algorithm is to decide which distance metric to use for the comparisons. For this post, I'll use the most common distance, Euclidean distance. The R code which follows simply takes two vectors and calculates that distance.
+The first part of creating a KNN algorithm is to decide which distance metric to use for the comparisons. For this post, I'll use the most common distance, Euclidean distance. This R code simply takes two vectors and calculates that distance.
 
 ```{r}
 euclidean_dist <- function(a, b){
@@ -209,7 +209,7 @@ sum(neighbors != truth)/length(truth)
 old <- end - start
 ```
 
-You can see this implementation took `r round(end-start, 1)` minutes! This is much too long and would only increase as we added points or variables. The misclassifcation rate was almost 0 (mistakes probably due to some points extremely close to the border) but that's little comfort knowing how long it takes. Luckily, there is a much more efficient way to do this.
+You can see this implementation took `r round(end-start, 1)` minutes! This is already very slow and would only get worse as more points or variables are added. The misclassifcation rate was almost 0, (mistakes probably due to some points extremely close to the border) but that's little comfort knowing how long it takes. Luckily, there is a much more efficient way to do this.
 
 ## K-D Tree Approach
 
@@ -227,7 +227,7 @@ The inputs to the tree are the training data set, the class labels for each poin
 kd_tree <- function(data, classes, depth = 1)
 ```
 
-Since this tree will likely have many layers of branches, we need to make sure the `depth` variable stays within the bounds of the number of columns, which can be achieved using the modulus operator
+Since this tree will likely have many layers of branches, I need to make sure the `depth` variable stays within the bounds of the number of columns, which can be achieved using the modulus operator
 
 ```{r, eval = F}
   # Check if data is matrix or a vector
@@ -248,9 +248,9 @@ Since this tree will likely have many layers of branches, we need to make sure t
   }
 ```
 
-There are two ways of doing this depending on if the data is a matrix or a vector (which occurs when there is only one point left). There might be a more elegant way to due this but this will do for this example. I also reset the depth if it is 0 since R indices start at 1, but this wouldn't be an issue in other languages.
+There are two ways of doing this depending on if the data is a matrix or a vector (which occurs when there is only one point left). There might be a simpler way to do this, but this will do for this example. I also reset the depth if it is 0 since R indices start at 1, but this wouldn't be an issue in other languages.
 
-Since this is a recursive algorithm, we need to focus on the base case, when there is only one (or zero) data point passed to the function. Once this case is reached, we create a node, recording the point, it's median value, the axis of that median value, and set the right and left nodes to `NULL` since there are no more points to create child brances with.
+Since this is a recursive algorithm, I need to focus on the base case, when there is only one (or zero) data point passed to the function. Once this case is reached, I create a node, recording the point, it's median value, the axis of that median value, and set the right and left nodes to `NULL` since there are no more points to create child brances with.
 
 ```{r, eval = F}
   # If only one point, make node
@@ -273,7 +273,7 @@ Since this is a recursive algorithm, we need to focus on the base case, when the
   }
 ```
 
-Now that the base case has been taken care of, we can focus on the case when there are multiple points left. In this case, you use the current column and find the median value, then split the data up into left and right data sets. You'll notice I don't use R's `median` function even though that would be simpler. This is because I need to know the index of the median point so that I can store it in the node, and there would be an issue if I only had two points with values say 1 and 2 since the median would then be 1.5 and of little use. 
+Now that the base case has been taken care of, I can focus on the case when there are multiple points left. In this case, you use the current column and find the median value, then split the data up into left and right data sets. You'll notice I don't use R's `median` function even though that would be simpler. This is because I need to know the index of the median point so that I can store it in the node. There would also be an issue if I only had two points with values say 1 and 2 since the median would then be 1.5 and not helpful. 
 
 Once the data is split, I create a node just like above, but this time I create a left and right child branch by calling the `kd_tree` function again on the subsets of the data, increasing the depth for each by 1 as I do so. 
 
@@ -302,7 +302,7 @@ Once the data is split, I create a node just like above, but this time I create 
 
 ```
 
-Now that the k-D tree is taken care of, we can move on to how to use it to find the nearest neighbor of a new point. 
+Now that the k-D tree is taken care of, I can move on to how to use it to find the nearest neighbor of a new point. 
 
 #### Finding the Nearest Neighbor
 
@@ -312,7 +312,7 @@ The inputs to this function are the k-D tree created from the previous function,
 find_neighbor <- function(tree, point, best = list(class = NULL, dist = NULL))
 ```
 
-Since this is another recursive algorithm, we need to take care of the base case, which is when we get to a branch that doesn't exist. In this case, simply go back up one branch.
+Since this is another recursive algorithm, I need to take care of the base case, which is when the algorithm gets to a branch that doesn't exist. In this case, it simply goes back up one branch.
 
 ```{r, eval = F}
   # Go back up one if null node
@@ -321,7 +321,7 @@ Since this is another recursive algorithm, we need to take care of the base case
   }
 ```
 
-If the branch does exist, then we use the column of the point at the node and the median value to decide whether we should go down the left branch or the right branch, passing down the current closest neighbor as we go.
+If the branch does exist, then I use the column of the point at the node and the median value to decide whether the algorithm should go down the left branch or the right branch, passing down the current closest neighbor as it goes.
 
 ```{r, eval = F}
   if(point[tree$axis] < tree$value){
@@ -331,7 +331,7 @@ If the branch does exist, then we use the column of the point at the node and th
   }
 ```
 
-Once these functions have returned a value, we have to compare that value to the current node and see if it is closer than the current closest point.
+Once these functions have returned a value, I have to compare that value to the current node and see if it is closer than the current closest point.
 
 ```{r, eval = F}
   # Compare current node to best or set it as best if none set
@@ -341,7 +341,7 @@ Once these functions have returned a value, we have to compare that value to the
   }
 ```
 
-After checking the current node, we then have to decide if we need to head down the other branch we didn't take before to see if there is a closer point on that side. The Wikipedia article explains the theory behind this, but if the distance between the current node's value and the point's value is less than the distance between the point and it's current closest neighbor, there is a chance that a better candidate exists on that side.
+After checking the current node, I then have to decide if I need to head down the other branch the algorithm didn't take before to see if there is a closer point on that side. The Wikipedia article explains the theory behind this, but if the distance between the current node's value and the point's value is less than the distance between the point and it's current closest neighbor, there is a chance that a better candidate exists on that side.
 
 ```{r, eval = F}
   # Check to see if the other branch needs to be checked 
@@ -355,9 +355,9 @@ After checking the current node, we then have to decide if we need to head down 
   }
 ```
 
-Once that is done, we can return the current best point and recursion will take care of the rest.
+Once that is done, I can return the current best point and recursion will take care of the rest.
 
-Now that the algorithm is complete, we can combine the two functions together into the full classifier and test it with the same data used before.
+Now that the algorithm is complete, I can combine the two functions together into the full classifier and test it with the same data used before.
 
 ```{r}
 nearest_neighbor_tree <- function(training, classes, testing){
