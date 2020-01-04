@@ -18,6 +18,8 @@ copyright = ""
 # Enable analytics by entering your Google Analytics tracking ID
 googleAnalytics = ""
 
+math = true
+
 ############################
 ## Advanced options below ##
 ############################
