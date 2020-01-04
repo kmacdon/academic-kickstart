@@ -96,7 +96,7 @@ mod_density <- lm(RATE ~ log(Density), data = full_data)
 |(Intercept)  |   30.424|      1.095|  27.795|                  0|
 |log(Density) |   -3.015|      0.230| -13.099|                  0|
 
-As expected, the log density is extremely significant, and the R^2^ value is about 0.781. I'll also examine the residuals of the model to make sure nothing is unusual.
+As expected, the log density is extremely significant, and the $ R^2 $ value is about 0.781. I'll also examine the residuals of the model to make sure nothing is unusual.
 
 <img src="/post/suicide_analysis_files/figure-html/unnamed-chunk-15-1.png" width="768" style="display: block; margin: auto;" />
 
@@ -113,11 +113,11 @@ mod_gun <- lm(RATE ~ gunOwnership, data = full_data)
 |(Intercept)  |    8.477|      1.278|   6.635|                  0|
 |gunOwnership |   24.854|      3.578|   6.946|                  0|
 
-Gun ownership is also a significant predictor of suicide rate, but the R^2^ value is about 0.501, lower than the previous model.
+Gun ownership is also a significant predictor of suicide rate, but the $ R^2 $ value is about 0.501, lower than the previous model.
 
 <img src="/post/suicide_analysis_files/figure-html/unnamed-chunk-18-1.png" width="768" style="display: block; margin: auto;" />
 
-The scatterplot of the residucals doesn't show any pattern, but the histogram is clearly not normally distributed. Combined with the lower R^2^ value, I would conclude that population density is a better predictor of suicide rate than gun ownership. 
+The scatterplot of the residucals doesn't show any pattern, but the histogram is clearly not normally distributed. Combined with the lower $ R^2 $ value, I would conclude that population density is a better predictor of suicide rate than gun ownership. 
 
 #### Both Variables
 
@@ -146,7 +146,7 @@ mod_both <- lm(RATE ~ log(Density) + gunOwnership, data = full_data)
 |log(Density) |   -2.581|      0.309|  -8.345|              0.000|
 |gunOwnership |    6.461|      3.182|   2.030|              0.048|
 
-This model shows changes in the coefficients for each variable which is to be expected, and gun ownership is now just barely significant. The adjusted R^2^ value is about 0.79, which is only a slight improvement over the model with just population density as an explanatory variable. 
+This model shows changes in the coefficients for each variable which is to be expected, and gun ownership is now just barely significant. The adjusted $ R^2 $ value is about 0.79, which is only a slight improvement over the model with just population density as an explanatory variable. 
 
 <img src="/post/suicide_analysis_files/figure-html/unnamed-chunk-22-1.png" width="768" style="display: block; margin: auto;" />
 
