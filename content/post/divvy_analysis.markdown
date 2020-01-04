@@ -157,7 +157,7 @@ model <- lm(tripduration ~ distance + gender + PRCP + season + time_of_day,
 |time_of_dayAfternoon |   61.904|      0.454|  136.235|                  0|
 |time_of_dayEvening   |   52.494|      0.468|  112.201|                  0|
 
-This model has an adjusted `\(R^2\)` value of .68, which is fairly good for a problem such as this. Additionally, all of the features are statistically significant predictors of trip duration. 
+This model has an adjusted $ R^2 $ value of .68, which is fairly good for a problem such as this. Additionally, all of the features are statistically significant predictors of trip duration. 
 
 In order to do some diagnostics on this model, I'll randomly select 5,000 points residuals to plot. 
 
@@ -192,7 +192,7 @@ model <- lm(tripduration ~ distance + gender + PRCP + season + time_of_day,
 ```
 <img src="/post/divvy_analysis_files/figure-html/second_res-1.png" width="480" style="display: block; margin: auto;" />
 
-Removing those points improved the `\(R^2\)` to 0.81, but it's still clear from the residuals plot that the problems remain. Due to these issues, I will try to deal with the heteroscedascity by predicting the log of the duration using the log of the distance.
+Removing those points improved the $ R^2 $ to 0.81, but it's still clear from the residuals plot that the problems remain. Due to these issues, I will try to deal with the heteroscedascity by predicting the log of the duration using the log of the distance.
 
 ### Third Model
 
@@ -221,7 +221,7 @@ model <- lm(log_dur ~ log_dist + gender + PRCP + season + time_of_day,
 
 Now, we are sacrificing interpretability for accuracy, but it looks like the tradeoff was worth it. The histogram of the resiudals looks much more normal and the scatterplot does not have the heteroscedascity of the earlier ones.
 
-The adjusted `\(R^2\)` is about 0.87, so we can see this transformation didn't just help fix the residual problem, it also improved the explanatory nature of the model. This model explains about 87% of the variation in tripduration (for the dataset without outliers). Just to see that we're not overfitting our data, I'll compare the mean squared error and mean absolute percentage error of the training data to the test data, which did not have the speed outliers removed. 
+The adjusted $ R^2 $ is about 0.87, so we can see this transformation didn't just help fix the residual problem, it also improved the explanatory nature of the model. This model explains about 87% of the variation in tripduration (for the dataset without outliers). Just to see that we're not overfitting our data, I'll compare the mean squared error and mean absolute percentage error of the training data to the test data, which did not have the speed outliers removed. 
 
 
 |          |           |         |          |
