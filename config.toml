@@ -16,7 +16,7 @@ baseurl = "https://kevinmacdonald.me/"
 copyright = ""
 
 # Enable analytics by entering your Google Analytics tracking ID
-googleAnalytics = ""
+googleAnalytics = "UA-122946801-1"
 
 math = true
 
