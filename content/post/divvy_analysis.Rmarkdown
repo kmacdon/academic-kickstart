@@ -370,7 +370,7 @@ Since the trip duration is now on a log scale, interpreting the effects of chang
 
 The coefficient for the log distance was about .858, so this means that for every 10% increase in distance, the expected trip duration will increase by about 8.5%, clearly a strong relationship. All else being equal, a man would be expected to have a trip duration that is about 7.5% less than a woman's. 
 
-Precipitation had a very negligible effect while winter decreased durations by about have as much as gender going from female to male. Interestingly, the time of day being in the afternoon increased the expected duration by about 5.7% with evening commutes having a similar one. Perhaps the time of day could have been incorporated better by using more cut points to discretize it or even fitting something like cubic splines, but I'll keep it simple and just use this model.
+Precipitation had a very negligible effect while winter decreased durations by about half as much as being male does, 3.2 % . Interestingly, the time of day being in the afternoon increased the expected duration by about 5.7% with evening commutes having a similar one. Perhaps the time of day could have been incorporated better by using more cut points to discretize it or even fitting something like cubic splines, but I'll keep it simple and just use this model.
 
 The adjusted $ R^2 $ is about `r round(summary(model)$adj.r, 2)`, so this model explains about 87% of the variation in tripduration (for the dataset without outliers). Just to see if I'm overfitting the data, I'll compare the mean squared error and mean absolute percentage error of the training data to the test data, which did not have the speed outliers removed. 
 
