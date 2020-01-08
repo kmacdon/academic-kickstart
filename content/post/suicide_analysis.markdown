@@ -35,7 +35,7 @@ suicides <- left_join(suicides, state_names, by = c("STATE" = "abbrev")) %>%
 ```
 <img src="/post/suicide_analysis_files/figure-html/unnamed-chunk-3-1.png" width="672" style="display: block; margin: auto;" />
 
-It's immediately noticeable that Montana and Wyoming have the highest suicide rates in the country, and states in the Great Plains and Rocky Mountain regions generally have higher rates than other areas of the country.
+It's immediately noticeable that Alaska, Montana, and Wyoming have the highest suicide rates in the country, and states in the Great Plains and Rocky Mountain regions generally have higher rates than other areas of the country.
 
 
 ```r
@@ -46,7 +46,7 @@ pop <- readr::read_csv("population.csv") %>%
 ```
 <img src="/post/suicide_analysis_files/figure-html/unnamed-chunk-5-1.png" width="672" style="display: block; margin: auto;" />
 
-I used the log of the population density so that the differences among states can be viewed more clearly. If we look at Montana and Wyoming again, we can see that they again stand out, this time as having the lowest population density. In general, this plot is close to the inverse of the previous one, which shows that there is some level of correlation between these two variables.
+I used the log of the population density so that the differences among states can be viewed more clearly. If we look at Alaska, Montana, and Wyoming again, we can see that they again stand out, this time as having the lowest population densities. In general, this plot is close to the inverse of the previous one, which shows that there is some level of correlation between these two variables.
 
 
 ```r
@@ -73,15 +73,15 @@ The correlation between density and suicide rates is extremely apparent from thi
 
 <img src="/post/suicide_analysis_files/figure-html/unnamed-chunk-10-1.png" width="480" style="display: block; margin: auto;" />
 
-The improvement is clear, and it is easy to see that there is a strong correlation between these two variables. Now I'll look at the relationship between gun ownership and suicide.
+The improvement is clear as the relationship is now very linear with a correlation of about -.88. Now I'll look at the relationship between gun ownership and suicide.
 
 <img src="/post/suicide_analysis_files/figure-html/unnamed-chunk-11-1.png" width="480" style="display: block; margin: auto;" />
 
-Again, there is a strong and obvious correlation between these two variables, which also means there is a strong correlation between gun ownership and population density.
+Again, there is a strong linear relationship and correlation between the two which means there is also a strong correlation between gun ownership and population density.
 
 <img src="/post/suicide_analysis_files/figure-html/unnamed-chunk-12-1.png" width="480" style="display: block; margin: auto;" />
 
-This potential multicollinearity might be an issue as I move into building a model using these variables. 
+The correlation here is slightly lower although still strong. The potential multicollinearity between the two independent variables might be an issue as I move into building a model using these variables. 
 
 ## Model Building
 
@@ -117,7 +117,7 @@ Gun ownership is also a significant predictor of suicide rate, but the $ R^2 $ v
 
 <img src="/post/suicide_analysis_files/figure-html/unnamed-chunk-18-1.png" width="768" style="display: block; margin: auto;" />
 
-The scatterplot of the residucals doesn't show any pattern, but the histogram is clearly not normally distributed. Combined with the lower $ R^2 $ value, I would conclude that population density is a better predictor of suicide rate than gun ownership. 
+The scatterplot of the residuals doesn't show any pattern, but the histogram is clearly not normally distributed. Combined with the lower $ R^2 $ value, I would conclude that population density is a better predictor of suicide rate than gun ownership. 
 
 #### Both Variables
 
@@ -133,7 +133,7 @@ round(1/(1 - summary(mod_vif)$r.squared), 2)
 ## [1] 1.92
 ```
 
-The VIF is only about 1.92, which indicates that the multicollinearity is not strong, so I'll build the model with both variables and examine it as I did the others.
+The VIF is only about 1.92 while a typical cutoff is a VIF of 5. Since the multicollinearity is not strong I'll build the model with both variables and examine it as I did the others.
 
 
 ```r
@@ -150,8 +150,10 @@ This model shows changes in the coefficients for each variable which is to be ex
 
 <img src="/post/suicide_analysis_files/figure-html/unnamed-chunk-22-1.png" width="768" style="display: block; margin: auto;" />
 
-The resiudals appear mostly normal, certainly better than the model with just gun ownership, although there is the spike around -3. Overall, I would stick with the model with just population density since it is simpler, has better looking residuals, and is still almost as good as the model with both variables. That model indicates that for every decrease in order of magnitude of density (1000 to 100 or 100 to 10) the expected suicide rate would increase by about 6.94.
+The residuals appear mostly normal and are certainly better than the model with just gun ownership. Overall, I would stick with the model with just population density since it is simpler, has better looking residuals, and is still almost as good as the model with both variables.
+
+The coefficient for the log of population density in that model was about -3.015. This indicates that for every decrease in order of magnitude of density (1000 to 100 or 100 to 10) the expected suicide rate would increase by about 6.94. 
 
 ## Conclusion
 
-The plots and models show that population density is a strong predictor of suicide rate, explaining about 78% of the variability. As it's always important to remember, correlation does not equal causation. Suicide is not a simple issue to explain, and there are countless factors that are involved. However, the strong correlation between these variables, and gun ownership, are interesting areas to explore, especially since about half of all suicides involve firearms^[https://www.cdc.gov/nchs/fastats/suicide.htm].
+The plots and models show that population density is a strong predictor of suicide rate, explaining about 78% of the variability according to the $ R^2 $. As it's always important to remember, correlation does not equal causation. Suicide is not a simple issue to explain, and there are countless factors that are involved. However, the strong correlation between these variables, and gun ownership, are interesting areas to explore, especially since about half of all suicides involve firearms^[https://www.cdc.gov/nchs/fastats/suicide.htm].
