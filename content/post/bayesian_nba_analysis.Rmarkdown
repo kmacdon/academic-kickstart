@@ -14,7 +14,9 @@ library(ggplot2)
 ```
 
 ## Introduction
-This project uses Bayesian analysis to look at the winning percentages of the Cleveland Cavaliers and the Golden State Warriors. Using data from 2013 through 2017, I will analyze the posterior distribution in order to make predictions about the 2018 season. I use a prior of Beta(50,50) for most of the analysis although some sections do look at the effects of using a different prior. The likelihood function follows a Binomial distribution since I am examing Win/Loss data. 
+This project uses Bayesian analysis to look at the winning percentages of the Cleveland Cavaliers and the Golden State Warriors. Using data from 2013 through 2017, I will analyze the posterior distribution in order to make predictions about the 2018 season. I use a prior of Beta(50,50) for most of the analysis although some sections do look at the effects of using a different prior. The likelihood function follows a Binomial distribution since I am examining Win/Loss data. 
+
+These two distributions are conjugate distributions, so my posterior distrubtion for the winning percentage will be Beta as well, with the parameters just being the prior alpha and beta plus the number of wins and loses respectively.
 
 ```{r}
 cavs <- c(24, 33, 53, 57, 51)
