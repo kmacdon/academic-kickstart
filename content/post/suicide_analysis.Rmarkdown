@@ -96,7 +96,7 @@ The plot of the proportion of gun owners by state shows similar trends to the tw
 
 ## Relationship
 
-```{r}
+```{r, echo=FALSE}
 full_data <- left_join(suicides, pop, by = c("names" = "State")) %>% 
   left_join(., guns, by = c("names" = "State"))
 ```
