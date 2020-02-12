@@ -224,7 +224,7 @@ model <- lm(log_dur ~ log_dist + gender + PRCP + season + time_of_day,
 ```
 <img src="/post/divvy_analysis_files/figure-html/third_res-1.png" width="672" style="display: block; margin: auto;" />
 
-Now, I'm are sacrificing interpretability for accuracy, but it looks like the tradeoff was worth it. The histogram of the resiudals looks much more normal, and the scatterplot does not have the heteroscedascity of the earlier ones. Since the assumptions behind linear regression were not violated, there shouldn't be any issue interpreting the coefficients.
+Now, I'm are sacrificing interpretability for accuracy, but it looks like the tradeoff was worth it. The histogram of the residuals looks much more normal, and the scatterplot does not have the heteroscedascity of the earlier ones. Since the assumptions behind linear regression were not violated, there shouldn't be any issue interpreting the coefficients.
 
 
 |                     | Estimate| Std. Error|   t value| Pr(>&#124;t&#124;)|

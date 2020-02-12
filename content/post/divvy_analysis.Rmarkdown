@@ -360,7 +360,7 @@ p2 <- ggplot() +
 grid.arrange(p1, p2, nrow = 1)
 ```
 
-Now, I'm are sacrificing interpretability for accuracy, but it looks like the tradeoff was worth it. The histogram of the resiudals looks much more normal, and the scatterplot does not have the heteroscedascity of the earlier ones. Since the assumptions behind linear regression were not violated, there shouldn't be any issue interpreting the coefficients.
+Now, I'm are sacrificing interpretability for accuracy, but it looks like the tradeoff was worth it. The histogram of the residuals looks much more normal, and the scatterplot does not have the heteroscedascity of the earlier ones. Since the assumptions behind linear regression were not violated, there shouldn't be any issue interpreting the coefficients.
 
 ```{r third_coef, echo = FALSE}
 knitr::kable(round(summary(model)$coefficients, 3))

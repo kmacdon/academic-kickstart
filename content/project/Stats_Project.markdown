@@ -13,7 +13,7 @@ output: html_document
 
 ## Purposeful Selection of Covariates
 
-In order to create our model, we will go through a series of steps designed to remove insignificant variables while looking for any special relationships between the variables such as non-linearity or statistical interaction between predictors. The steps I follow come from the method of variable selectin as described in *Applied Logistic Regression* (Hosmer 1989).
+In order to create our model, we will go through a series of steps designed to remove insignificant variables while looking for any special relationships between the variables such as non-linearity or statistical interaction between predictors. The steps I follow come from the method of variable selection as described in *Applied Logistic Regression* (Hosmer 1989).
 
 ##### Step 1
 
