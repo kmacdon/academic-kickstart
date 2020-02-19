@@ -109,32 +109,22 @@ Since this tree will likely have many layers of branches, I need to make sure th
 
 
 ```r
-  # Check if data is matrix or a vector
-  if(class(data) == "matrix"){
-    depth <- depth %% ncol(data)
-    
-    if(!depth){
-      # In case depth is 0 
-      depth <- ncol(data)
-    }
-  } else {
-    depth <- depth %% length(data)
-    
-    if(!depth){
-      # In case depth is 0 
-      depth <- length(data)
-    }
+  depth <- depth %% ncol(data)
+  
+  if(!depth){
+    # In case depth is 0 
+    depth <- ncol(data)
   }
 ```
 
-There are two ways of doing this depending on if the data is a matrix or a vector (which occurs when there is only one point left). There might be a simpler way to do this, but this will do for this example. I also reset the depth if it is 0 since R indices start at 1, but this wouldn't be an issue in other languages.
+I reset the depth if it is 0 since R indices start at 1, but this wouldn't be an issue in other languages.
 
 Since this is a recursive algorithm, I need to focus on the base case, when there is only one (or zero) data point passed to the function. Once this case is reached, I create a node, recording the point, it's median value, the axis of that median value, and set the right and left nodes to `NULL` since there are no more points to create child brances with.
 
 
 ```r
   # If only one point, make node
-  if(is.null(dim(data))){
+  if(nrow(data) == 1){
     
     # Check to see if data is empty
     if(is.na(data[depth])){
@@ -145,7 +135,7 @@ Since this is a recursive algorithm, I need to focus on the base case, when ther
     return(list(
       axis = depth,
       value = data[depth],
-      point = data,
+      point = as.vector(data),
       class = classes,
       left = NULL,
       right = NULL
@@ -155,7 +145,7 @@ Since this is a recursive algorithm, I need to focus on the base case, when ther
 
 Now that the base case has been taken care of, I can focus on the case when there are multiple points left. In this case, you use the current column and find the median value, then split the data up into left and right data sets. You'll notice I don't use R's `median` function even though that would be simpler. This is because I need to know the index of the median point so that I can store it in the node. There would also be an issue if I only had two points with values say 1 and 2 since the median would then be 1.5 and not helpful. 
 
-Once the data is split, I create a node just like above, but this time I create a left and right child branch by calling the `kd_tree` function again on the subsets of the data, increasing the depth for each by 1 as I do so. 
+Once the data is split, I create a node just like above, but this time I create a left and right child branch by calling the `kd_tree` function again on the subsets of the data, increasing the depth for each by 1 as I do so. When I divide the data, I use the `drop=FALSE` option to make sure the data stays as a matrix and doesn't turn into a vector if there is only one point. This is
 
 
 ```r
@@ -166,8 +156,8 @@ Once the data is split, I create a node just like above, but this time I create 
   data_order <- order(data[, depth])
   
   # Split data excluding median point
-  left_data <- data[data_order[1:(middle-1)], ]
-  right_data <- data[data_order[(middle+1):nrow(data)], ]
+  left_data <- data[data_order[1:(middle-1)], , drop=FALSE]
+  right_data <- data[data_order[(middle+1):nrow(data)], , drop=FALSE]
   middle_point <- data[data_order[middle], ]
   
   return(list(
@@ -275,7 +265,7 @@ end - start
 ```
 
 ```
-## Time difference of 3.291156 secs
+## Time difference of 3.373857 secs
 ```
 
 ```r
@@ -286,7 +276,7 @@ sum(neighbors != truth)/length(truth)
 ## [1] 0.001
 ```
 
-This only took 3.291 seconds! A 98.4% increase in speed! And there was no loss in accuracy. The speed benefits would only grow as the data grows more complex and larger. 
+This only took 3.374 seconds! A 98.4% increase in speed! And there was no loss in accuracy. The speed benefits would only grow as the data grows more complex and larger. 
 
 ## Conclusion
 
