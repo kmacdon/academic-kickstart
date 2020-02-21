@@ -21,7 +21,7 @@ library(dplyr)
 library(ggplot2)
 library(usmap)
 
-suicides <- readr::read_csv("state_suicide.csv") %>% 
+suicides <- readr::read_csv("data/suicide/state_suicide.csv") %>% 
   filter(YEAR == 2017) %>% 
   select(STATE, RATE)
 ```
@@ -39,7 +39,7 @@ It's immediately noticeable that Alaska, Montana, and Wyoming have the highest s
 
 
 ```r
-pop <- readr::read_csv("population.csv") %>% 
+pop <- readr::read_csv("data/suicide/population.csv") %>% 
   filter(State != "District of Columbia") %>% 
   select(State, Density) %>% 
   mutate(fips = fips(State))
@@ -50,7 +50,7 @@ I used the log of the population density so that the differences among states ca
 
 
 ```r
-guns <- readr::read_csv("gun_ownership.csv") %>% 
+guns <- readr::read_csv("data/suicide/gun_ownership.csv") %>% 
   select(State, gunOwnership) %>% 
   mutate(fips = fips(State))
 ```

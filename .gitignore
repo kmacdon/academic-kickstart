@@ -1,6 +1,12 @@
 public/
 .idea/
+
+*cache
 *.Rproj.user
 *.Rhistory
-*.DS_Store
 *.DS_Store 
+*content/post/data/
+*content/project/data/
+*.Rmarkdown
+*website*
+.Rproj.user

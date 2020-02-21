@@ -26,7 +26,7 @@ After a disappointing fantasy football season finishing 6th out of 10 teams, I d
 
 
 ```python
-scores = pd.read_csv("fantasy_scores.csv")
+scores = pd.read_csv("data/fantasy/fantasy_scores.csv")
 scores.head()
 ```
 
@@ -75,7 +75,7 @@ As you can see, I scored the 3rd most points in the regular season, already evid
 
 
 ```
-## <ggplot: (7565708471)>
+## <ggplot: (-9223372029287213508)>
 ```
 
 <img src="/post/fantasy_analysis_files/figure-html/unnamed-chunk-6-1.png" width="614" style="display: block; margin: auto;" />
