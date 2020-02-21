@@ -117,16 +117,15 @@ The scatterplot of the residuals doesn't show any pattern, but the histogram is 
 
 #### Both Variables
 
-As mentioned before, there is the potential issue of multicollinearity which I can quantify by calculating the [Variance Inflation Factor](https://en.wikipedia.org/wiki/Variance_inflation_factor) (VIF) between my two explanatory variables.
+As mentioned before, there is the potential issue of multicollinearity between gun ownership and population density which I can quantify by calculating the [Variance Inflation Factor](https://en.wikipedia.org/wiki/Variance_inflation_factor) (VIF) between my two explanatory variables. This is just $ \frac{1}{1-R^2} $. 
 
 
 ```r
-mod_vif <- lm(log(Density) ~ gunOwnership, data = full_data)
-round(1/(1 - summary(mod_vif)$r.squared), 2)
+round(1/(1 - (.693)), 2)
 ```
 
 ```
-## [1] 1.92
+## [1] 3.26
 ```
 
 The VIF is only about 1.92 while a typical cutoff is a VIF of 5. Since the multicollinearity is not strong I'll build the model with both variables and examine it as I did the others.
