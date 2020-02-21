@@ -10,7 +10,7 @@ authors:
 superuser: true
 
 # Role/position
-role: Incoming Data Scientist
+role: Data Scientist
 
 # Organizations/Affiliations
 organizations:
@@ -66,4 +66,4 @@ email: ""
 #- Visitors
 ---
 
-Kevin is an incoming Data Scientist at 84.51 who will be starting in January of 2020. He has experience in R, Python, C++, and SQL and has applied these skills in projects including Bayesian Modeling, Machine Learning, and Statistical Analysis and Modeling.
+Kevin is a Data Scientist at 84.51 in their development program. He has experience in R, Python, C++, and SQL and has applied these skills in projects including Bayesian Modeling, Machine Learning, and Statistical Analysis and Modeling.
