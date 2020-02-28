@@ -119,7 +119,7 @@ Since this tree will likely have many layers of branches, I need to make sure th
 
 I reset the depth if it is 0 since R indices start at 1, but this wouldn't be an issue in other languages.
 
-Since this is a recursive algorithm, I need to focus on the base case, when there is only one (or zero) data point passed to the function. Once this case is reached, I create a node, recording the point, it's median value, the axis of that median value, and set the right and left nodes to `NULL` since there are no more points to create child brances with.
+Since this is a recursive algorithm, I need to focus on the base case, when there is only one (or zero) data point passed to the function. Once this case is reached, I create a node, recording the point, it's median value, the column of that median value, and set the right and left nodes to `NULL` since there are no more points to create child brances with.
 
 
 ```r
@@ -133,7 +133,7 @@ Since this is a recursive algorithm, I need to focus on the base case, when ther
     
     # Else return node
     return(list(
-      axis = depth,
+      column = depth,
       value = data[depth],
       point = as.vector(data),
       class = classes,
@@ -161,7 +161,7 @@ Once the data is split, I create a node just like above, but this time I create 
   middle_point <- data[data_order[middle], ]
   
   return(list(
-    axis = depth,
+    column = depth,
     value = middle_point[depth],
     point = middle_point,
     class = classes[data_order[middle]],
@@ -197,7 +197,7 @@ If the branch does exist, then I use the column of the point at the node and the
 
 
 ```r
-  if(point[tree$axis] < tree$value){
+  if(point[tree$column] < tree$value){
     best <- find_neighbor(tree$left, point, best)
   } else {
     best <- find_neighbor(tree$right, point, best)
@@ -221,8 +221,8 @@ After checking the current node, I then have to decide if I need to head down th
 ```r
   # Check to see if the other branch needs to be checked 
   
-  if(abs(tree$value - point[tree$axis]) < best$dist){
-    if(point[tree$axis] > tree$value){
+  if(abs(tree$value - point[tree$column]) < best$dist){
+    if(point[tree$column] > tree$value){
       best <- find_neighbor(tree$left, point, best)
     } else {
       best <- find_neighbor(tree$right, point, best)
@@ -265,7 +265,7 @@ end - start
 ```
 
 ```
-## Time difference of 3.373857 secs
+## Time difference of 3.785406 secs
 ```
 
 ```r
@@ -276,7 +276,7 @@ sum(neighbors != truth)/length(truth)
 ## [1] 0.001
 ```
 
-This only took 3.374 seconds! A 98.4% increase in speed! And there was no loss in accuracy. The speed benefits would only grow as the data grows more complex and larger. 
+This only took 3.785 seconds! A 98.2% increase in speed! And there was no loss in accuracy. The speed benefits would only grow as the data grows more complex and larger. 
 
 ## Conclusion
 
