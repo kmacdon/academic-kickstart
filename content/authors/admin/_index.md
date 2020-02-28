@@ -18,7 +18,7 @@ organizations:
   url: "www.8451.com"
 
 # Short bio (displayed in user profile at end of posts)
-bio: Graduate of the University of Notre Dame who will be starting as a Data Scientist in January 2020.
+bio: Data Scientist at 84.51 
 
 interests:
 - Data Science
