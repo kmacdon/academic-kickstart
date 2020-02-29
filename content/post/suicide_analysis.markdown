@@ -125,7 +125,7 @@ round(1/(1 - (.693)^2), 2)
 ```
 
 ```
-## [1] 3.26
+## [1] 1.92
 ```
 
 The VIF is only about 1.92 while a typical cutoff is a VIF of 5. Since the multicollinearity is not strong I'll build the model with both variables and examine it as I did the others.
