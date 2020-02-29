@@ -8,5 +8,4 @@ public/
 *content/post/data/
 *content/project/data/
 *.Rmarkdown
-*website*
 .Rproj.user
