@@ -4,7 +4,6 @@ summary: Using keras to build a recommendation system with data from half a mill
 date: 2020-02-26
 authors: ["admin"]
 tags: ["python", "machine learning", "keras"]
-draft: true
 output: html_document
 ---
 
