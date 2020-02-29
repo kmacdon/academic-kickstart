@@ -193,6 +193,4 @@ print([round(x, 3) for x in [score_dot, score_concat_16, score_concat_16_8]])
 ## [0.873, 0.899, 0.907]
 ```
 
-Overall the models all performed very similar to one another, with the concatenated model with two dense layers doing slightly better than the others. This model performed about 4% better than the dot product model. The architecture allowed the model to learn some relationships between the 10 total latent variables for users and urls. 
-
-For these data, I also have a list of keywords for each of the websites, so I can use that to recommend websites based on their content, not just on which users have visited them which is something I will explore in another post.
+Overall the models all performed very similar to one another, with the concatenated model with two dense layers doing slightly better than the others. This model performed about 4% better than the dot product model. The architecture allowed the model to learn some relationships between the 10 total latent variables for users and urls. Going forward, I am going to build another system using a list of key words that I have for each url. This means I can try to recommend urls based on topic similarity rather than the behavior of users, so it will be interesting to see which one performs better.
