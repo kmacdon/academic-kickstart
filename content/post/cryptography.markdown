@@ -1,6 +1,6 @@
 ---
 title: "Cracking a Substitution Cypher Using MCMC methods"
-summary: Cracking a cypher using the Metropholis-Hastings algorithm
+summary: Finding the solution to a cypher with the Metropolis-Hastings algorithm.
 date: 2020-02-20
 authors: ["admin"]
 tags: ["r", "algorithms", "mcmc"]
