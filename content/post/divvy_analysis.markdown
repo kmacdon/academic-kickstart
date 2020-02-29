@@ -243,7 +243,7 @@ The coefficient for the log distance was about .858, so this means that for ever
 
 Precipitation had a very negligible effect while winter decreased durations by about half as much as being male does, 3.2 % . Interestingly, the time of day being in the afternoon increased the expected duration by about 5.7% with evening commutes having a similar one. Perhaps the time of day could have been incorporated better by using more cut points to discretize it or even fitting something like cubic splines, but I'll keep it simple and just use this model.
 
-The adjusted $ R^2 $ is about 0.87, so this model explains about 87% of the variation in tripduration (for the dataset without outliers). Just to see if I'm overfitting the data, I'll compare the mean squared error and mean absolute percentage error of the training data to the test data, which did not have the speed outliers removed. 
+The adjusted $ R^2 $ is about 0.87, so this model explains about 87% of the variation in tripduration (for the dataset without outliers). Just to see if I'm overfitting the data, I'll compare the mean squared error and mean absolute percentage error of the training data to the test data, which did not have the speed outliers removed. I also converted the predictions back from the log scale to the regular scale so that the results can be interepreted more easily.
 
 
 |          |           |         |          |
