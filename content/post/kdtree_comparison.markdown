@@ -55,39 +55,6 @@ nearest_neighbor_naive <- function(training, classes, testing){
 }
 ```
 
-In order to time this algorithm, I will generate a training set with 10,000 points and 2 columns, classifying each point based on whether the sum of the two columns is greater than .7, and then use a testing set of 1000 points generated the same way and predict the classifications. 
-
-
-```r
-set.seed(101)
-n_train <- 1e5
-n_test <- 1e3
-train <- matrix(runif(n_train*2), nrow = n_train)
-class <- ifelse(train[, 1] + train[, 2] > .7, "a", "b")
-test <- matrix(runif(n_test*2), nrow = n_test)
-truth <- ifelse(test[, 1] + test[, 2] > .7, "a", "b")
-
-start <- Sys.time()
-neighbors <- nearest_neighbor_naive(train, class, test)
-end <- Sys.time()
-end - start
-```
-
-```
-## Time difference of 3.440362 mins
-```
-
-```r
-sum(neighbors != truth)/length(truth)
-```
-
-```
-## [1] 0.001
-```
-
-
-You can see this implementation took 3.4 minutes! This is already very slow and would only get worse as more points or variables are added. The misclassifcation rate was almost 0, (mistakes probably due to some points extremely close to the border) but that's little comfort knowing how long it takes. Luckily, there is a much more efficient way to do this.
-
 ## K-D Tree Approach
 
 A k-D tree is a way of storing data that makes it much more efficient to search through the points and find the closest neighbor. The way a k-D tree works is, as the name might suggest, by storing the data in a tree. Starting with the root node, you pick the first column in the data and find the median value. Then you create two child branches, one with all the points whose value in the first column are less than the median value, and the other with all the points whose value in the first column are greater than the median value. The median point is stored at that node. Then for each of the child nodes you repeat the process using the second column instead. You keep repeating this process, cycling through the columns, until every point is stored at a node. For more information, check out the [Wikipedia](https://en.wikipedia.org/wiki/K-d_tree) post on the subect since it gives a very easy to understand description.
@@ -249,38 +216,41 @@ nearest_neighbor_tree <- function(training, classes, testing){
 }
 ```
 
-```r
-set.seed(101)
-n_train <- 1e5
-n_test <- 1e3
-train <- matrix(runif(n_train*2), nrow = n_train)
-class <- ifelse(train[, 1] + train[, 2] > .7, "a", "b")
-test <- matrix(runif(n_test*2), nrow = n_test)
-truth <- ifelse(test[, 1] + test[, 2] > .7, "a", "b")
+## Evaluation
 
-start <- Sys.time()
-neighbors <- nearest_neighbor_tree(train, class, test)
-end <- Sys.time()
-end - start
-```
+In order to evaluate the algorithms, I'll generate a a matrix of random uniform numbers with two columns and classify the points based on their sum. I'll use differing numbers of points to compare the speeds as the data grows.
 
-```
-## Time difference of 3.785406 secs
-```
 
 ```r
-sum(neighbors != truth)/length(truth)
-```
+n <- c(1e2, 1e3, 1e4, 1e5)
+naive_results <- list()
+kd_results <- list()
 
+for(i in 1:length(n)){
+  set.seed(101)
+  n_train <- n[i]
+  n_test <- .1*n_train
+  
+  train <- matrix(runif(n_train*2), nrow = n_train)
+  class <- ifelse(train[, 1] + train[, 2] > .7, "a", "b")
+  test <- matrix(runif(n_test*2), nrow = n_test)
+  truth <- ifelse(test[, 1] + test[, 2] > .7, "a", "b")
+  
+  naive_results[[i]] <- microbenchmark::microbenchmark(nearest_neighbor_naive(train, class, test), times = 1)
+  kd_results[[i]] <- microbenchmark::microbenchmark(nearest_neighbor_tree(train, class, test), times = 1)
+    
+}
 ```
-## [1] 0.001
-```
+<img src="/post/kdtree_comparison_files/figure-html/unnamed-chunk-14-1.png" width="672" />
 
-This only took 3.785 seconds! A 98.2% increase in speed! And there was no loss in accuracy. The speed benefits would only grow as the data grows more complex and larger. 
+The performances are fairly similar for the data sets with fewer observations, but there is a huge performance penalty for the naive method once there 100,000 points, but the tree method barely increases in speed. With that many points, the naive method takes about 37 minutes while the tree method takes just 3.9 seconds.
+
+
 
 ## Conclusion
 
-Hopefully this example has shown that the way data is stored can be extremely important in how an algorithm performs. The accuracy is the same between them, so there is absolutely no reason to choose the naive implemenatation. The k-D tree approach might take more time to develop than the naive approach, but using this algorithm even just a dozen times will already make it worthwile. 
+Hopefully this example has shown that the way data is stored can be extremely important in how an algorithm performs. The accuracy is the same between them, so there is absolutely no reason to choose the naive implemenatation. The k-D tree approach might take more time to develop than the naive approach, but the speed gains are obviously worth it. 
+
 
 
 
