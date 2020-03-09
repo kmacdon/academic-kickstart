@@ -57,7 +57,7 @@ nearest_neighbor_naive <- function(training, classes, testing){
 
 ## K-D Tree Approach
 
-A k-D tree is a way of storing data that makes it much more efficient to search through the points and find the closest neighbor. The way a k-D tree works is, as the name might suggest, by storing the data in a tree. Starting with the root node, you pick the first column in the data and find the median value. Then you create two child branches, one with all the points whose value in the first column are less than the median value, and the other with all the points whose value in the first column are greater than the median value. The median point is stored at that node. Then for each of the child nodes you repeat the process using the second column instead. You keep repeating this process, cycling through the columns, until every point is stored at a node. For more information, check out the [Wikipedia](https://en.wikipedia.org/wiki/K-d_tree) post on the subect since it gives a very easy to understand description.
+A k-D tree is a way of storing data that makes it much more efficient to search through the points and find the closest neighbor. The way a k-D tree works is, as the name might suggest, by storing the data in a tree. Starting with the root node, you pick the first column in the data and find the median value. Then you create two child branches, one with all the points whose value in the first column are less than the median value, and the other with all the points whose value in the first column are greater than the median value. The median point is stored at that node. Then for each of the child nodes you repeat the process using the second column instead. You keep repeating this process, cycling through the columns, until every point is stored at a node. For more information, check out the [Wikipedia](https://en.wikipedia.org/wiki/K-d_tree) post on the subject since it gives a very easy to understand description.
 
 ### Implementation
 
@@ -250,6 +250,8 @@ The performances are fairly similar for the data sets with fewer observations, b
 ## Conclusion
 
 Hopefully this example has shown that the way data is stored can be extremely important in how an algorithm performs. The accuracy is the same between them, so there is absolutely no reason to choose the naive implemenatation. The k-D tree approach might take more time to develop than the naive approach, but the speed gains are obviously worth it. 
+
+### Addition
 
 
 
