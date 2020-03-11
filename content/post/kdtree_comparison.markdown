@@ -241,7 +241,7 @@ for(i in 1:length(n)){
     
 }
 ```
-<img src="/post/kdtree_comparison_files/figure-html/unnamed-chunk-14-1.png" width="672" />
+<img src="/post/kdtree_comparison_files/figure-html/plot_evals-1.png" width="672" />
 
 The performances are fairly similar for the data sets with fewer observations, but there is a huge performance penalty for the naive method once there 100,000 points, but the tree method barely increases in speed. With that many points, the naive method takes about 37 minutes while the tree method takes just 3.9 seconds.
 
@@ -253,6 +253,53 @@ Hopefully this example has shown that the way data is stored can be extremely im
 
 ### Addition
 
+I ended up also coding the algorithm in C++ using the RCpp package just to see how much faster it would be. 
 
 
+```r
+n <- c(1e2, 1e3, 1e4, 1e5)
+cpp_results <- list()
 
+for(i in 1:length(n)){
+  set.seed(101)
+  n_train <- n[i]
+  n_test <- .1*n_train
+  
+  train <- matrix(runif(n_train*2), nrow = n_train)
+  class <- ifelse(train[, 1] + train[, 2] > .7, 1, 0)
+  test <- matrix(runif(n_test*2), nrow = n_test)
+  truth <- ifelse(test[, 1] + test[, 2] > .7, 1, 0)
+  
+  cpp_results[[i]] <- microbenchmark::microbenchmark(KDcpp::nn_classification_cpp(train, test, class))
+}
+```
+
+<img src="/post/kdtree_comparison_files/figure-html/plot_cpp-1.png" width="672" />
+
+The times for both algorithms are pretty reasonable, with the R version taking just 4 seconds for 100,000 rows, but the C++ version was still about 4 times as fast. It took me significantly longer to code than the R version for just a small improvement, but that difference could be meaningful in certain scenarios. I'll also see how the algorithms compare when using 50 columns instead of 2.
+
+
+```r
+n <- c(1e2, 1e3, 1e4)
+ncol <- 50
+cpp_results <- list()
+kd_results <- list()
+
+for(i in 1:length(n)){
+  set.seed(101)
+  n_train <- n[i]
+  n_test <- .1*n_train
+  
+  train <- matrix(runif(n_train*ncol), nrow = n_train)
+  class <- ifelse(train[, 1] + train[, 2] + train[, 3] + train[, 40] > 2, 1, 0)
+  test <- matrix(runif(n_test*ncol), nrow = n_test)
+  truth <- ifelse(test[, 1] + test[, 2] + test[, 3] + test[, 40] > 2, 1, 0)
+  
+  kd_results_cols[[i]] <- microbenchmark::microbenchmark(nearest_neighbor_tree(train, class, test), times=10)
+  cpp_results_cols[[i]] <- microbenchmark::microbenchmark(KDcpp::nn_classification_cpp(train, test, class), times=10)
+}
+```
+
+<img src="/post/kdtree_comparison_files/figure-html/plot_col-1.png" width="672" />
+
+Upping the columns to 50 cause a dramatic decrease in the speed of the R algorithm while the C++ one barely changed at all. Even though writing the algorithm in C++ took much longer, it clearly was worth it since it's 80 times faster than the R version for the most extreme case shown, taking less than a second.
