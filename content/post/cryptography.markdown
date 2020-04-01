@@ -11,7 +11,7 @@ output: html_document
 
 ## Introduction
 
-I recently came across a [paper](http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.182.9688&rep=rep1&type=pdf) by Chen and Rosenthal discussing using Markov Chain Monte Carlo methods to break substitution cyphers and wanted to implement it myself. I'll test this by encoding the first paragraph of *A Tale of Two Cities* by Charles Dickens and then use the Metropolis-Hastings algorithm to generate a solution.
+I recently came across a [paper](http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.182.9688&rep=rep1&type=pdf) discussing using Markov Chain Monte Carlo methods to break substitution cyphers and wanted to implement it myself. I'll test this by encoding the first paragraph of *A Tale of Two Cities* by Charles Dickens and then use the Metropolis-Hastings algorithm to generate a solution.
 
 ## Encoding
 
