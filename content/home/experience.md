@@ -25,7 +25,7 @@ date_format = "Jan 2006"
   date_start = "2020-01-20"
   description = """
   
-  * Maintain and develop a pharmacy dashboard using R Shiny in order to allow stakeholders to track key KPIs and customer behavior, reducing need for ad hoc analysis by data scientists
+  * Maintain and develop a pharmacy dashboard using R Shiny in order to allow stakeholders to track KPIs and customer behavior, reducing need for ad hoc analysis by data scientists and allowing faster access to data and insights.
   * Built a gradient boosted lookalike model to target customers for pharmacy ad campaigns, incorporating automated components to ensure easy retraining and scoring for quarterly campaings.
   """
   
