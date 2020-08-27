@@ -18,6 +18,18 @@ date_format = "Jan 2006"
 #   Leave `date_end` empty if it's your current employer.
 #   Begin/end multi-line descriptions with 3 quotes `"""`.
 [[experience]]
+  title = "Data Scientist"
+  company = "84.51"
+  company_url = "www.8451.com"
+  location = "Chicago, IL"
+  date_start = "2020-01-20"
+  description = """
+  
+  * Maintain and develop a pharmacy dashboard using R Shiny in order to allow stakeholders to track key KPIs and customer behavior, reducing need for ad hoc analysis by data scientists
+  * Built a gradient boosted lookalike model to target customers for pharmacy ad campaigns, incorporating automated components to ensure easy retraining and scoring for quarterly campaings.
+  """
+  
+[[experience]]
   title = "Data Analytics Intern"
   company = "Biogen"
   company_url = "www.biogen.com"

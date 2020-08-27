@@ -10,7 +10,7 @@ authors:
 superuser: true
 
 # Role/position
-role: Data Scientist
+role: Data Scientist on Pharmacy Team
 
 # Organizations/Affiliations
 organizations:
@@ -66,4 +66,4 @@ email: ""
 #- Visitors
 ---
 
-Kevin is a Data Scientist at 84.51 in their development program. He has experience in R, Python, C++, and SQL and has applied these skills in projects including Bayesian Modeling, Machine Learning, and Statistical Analysis and Modeling.
+Kevin is a Data Scientist at 84.51 on the Pharmacy team. He has experience in R, Python, C++, and SQL and has applied these skills in projects including Bayesian Modeling, Machine Learning, and Statistical Analysis and Modeling.
