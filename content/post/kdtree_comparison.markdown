@@ -112,7 +112,7 @@ Since this is a recursive algorithm, I need to focus on the base case, when ther
 
 Now that the base case has been taken care of, I can focus on the case when there are multiple points left. In this case, you use the current column and find the median value, then split the data up into left and right data sets. You'll notice I don't use R's `median` function even though that would be simpler. This is because I need to know the index of the median point so that I can store it in the node. There would also be an issue if I only had two points with values say 1 and 2 since the median would then be 1.5 and not helpful. 
 
-Once the data is split, I create a node just like above, but this time I create a left and right child branch by calling the `kd_tree` function again on the subsets of the data, increasing the depth for each by 1 as I do so. When I divide the data, I use the `drop=FALSE` option to make sure the data stays as a matrix and doesn't turn into a vector if there is only one point. This is
+Once the data is split, I create a node just like above, but this time I create a left and right child branch by calling the `kd_tree` function again on the subsets of the data, increasing the depth for each by 1 as I do so. When I divide the data, I use the `drop=FALSE` option to make sure the data stays as a matrix and doesn't turn into a vector if there is only one point.
 
 
 ```r
@@ -243,7 +243,7 @@ for(i in 1:length(n)){
 ```
 <img src="/post/kdtree_comparison_files/figure-html/plot_evals-1.png" width="672" />
 
-The performances are fairly similar for the data sets with fewer observations, but there is a huge performance penalty for the naive method once there 100,000 points, but the tree method barely increases in speed. With that many points, the naive method takes about 37 minutes while the tree method takes just 3.9 seconds.
+The performances are fairly similar for the data sets with fewer observations, but there is a huge performance penalty for the naive method once there are 100,000 points, but the tree method is barely affected. With that many points, the naive method takes about 37 minutes while the tree method takes just 3.9 seconds.
 
 
 
